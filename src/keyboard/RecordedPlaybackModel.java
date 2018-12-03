@@ -9,12 +9,15 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import static keyboard.RecordedPlaybackModel.melody;
 
 
 //class
 public class RecordedPlaybackModel implements Instrument{
     
     private static FakeClock clock;
+    public static ArrayList melody = new ArrayList();
+    
     public static class FakeClock extends Clock{
     private long time = 0;
     private final Instant WHEN_STARTED;
@@ -28,7 +31,7 @@ public class RecordedPlaybackModel implements Instrument{
         
         /** ACCESSORS **/
         public FakeClock getClock(){
-            return currentTimeMillis();
+            return clock;
         }
         
         /** OVERRIDDEN METHODS **/
@@ -58,12 +61,12 @@ public class RecordedPlaybackModel implements Instrument{
     
     
     public static class RecordedNote {
-        public static ArrayList melody = new ArrayList();
         KeyboardModel.Note note;
         long timestamp;
         int octave;
         boolean isStart;
         
+        //initialzation constructor
         public RecordedNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
             this.note = note;
             this.timestamp = timestamp;
@@ -86,8 +89,8 @@ public class RecordedPlaybackModel implements Instrument{
     
     private RecordedNote getNotes(int index) {
         //returns object at given index  
-        //recNote = melody[index];
-        return note;
+        RecordedNote recNote = (RecordedNote) RecordedPlaybackModel.melody.get(index);
+        return recNote;
     }
     
     public void startNote(int octave, KeyboardModel.Note note){
