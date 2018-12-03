@@ -1,7 +1,6 @@
 /*
  * JFrame for main keyboard component
  * 
- * @authors Yorick, Glen, Martin
  */
 package keyboard;
 import javax.swing.JFrame;

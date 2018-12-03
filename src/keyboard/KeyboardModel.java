@@ -96,9 +96,10 @@ public class KeyboardModel implements Instrument{
         public boolean expect(int key, int vel, boolean noteOn) {
             return this.key == key && this.vel==vel && this.noteOn == this.noteOn;
         }
-    }
+    }//end of FakeMidiChannel
     
-    //Debug overloaded methods
+    
+    //Test overloaded methods
     private static boolean startNoteTest(int oct, Note note, int expectedNote){
         boolean notetestPassed = true;
         keyboard.startNote(oct, note);
