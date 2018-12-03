@@ -6,30 +6,80 @@ package keyboard;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Objects;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 
 //class
 public class RecordedPlaybackModel implements Instrument{
     Clock clock;
-    
+        
     
     public static class FakeClock extends Clock{
-
+    //PRIVATE
+    private int hr; //store hours
+    private int min;  //store minutes
+    private int sec; //store seconds
+    //method variables
+    private final Instant WHEN_STARTED = Instant.now();
+    private final ZoneId DEFAULT_TZONE = ZoneId.systemDefault();
+    private long count = 0;
+  
+        public FakeClock(){
+        setTime(0, 0, 0);
+        
+        }
+        
+        public FakeClock(int hours, int minutes, int seconds){
+            setTime(hours, minutes, seconds);
+        }
+        
+        public void setTime (int hours, int minutes, int seconds){
+            if (0 <= hours && hours < 24)
+                hr = hours;
+            else
+                hr = 0;
+  
+            if (0 <= minutes && minutes < 60)
+                min = minutes;
+            else
+                min = 0;
+  
+            if (0 <= seconds && seconds < 60)
+                sec = seconds;
+            else
+                sec = 0;
+        }//end of setTime
+ 
+        //Method to return the hours
+        public int getHours ( ){
+            return hr;
+        }
+    
         @Override
         public ZoneId getZone() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return DEFAULT_TZONE;
         }
 
         @Override
         public Clock withZone(ZoneId zone) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return Clock.fixed(WHEN_STARTED, zone);
         }
 
         @Override
         public Instant instant() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return nextInstant();
+        }
+        
+        private Instant nextInstant()
+        {
+            ++count;
+            return WHEN_STARTED.plusSeconds(count);
         }
     
-    }
+    }//end of class FakeClock
     
     public static class RecordedNote {
         KeyboardModel.Note note;
@@ -47,7 +97,8 @@ public class RecordedPlaybackModel implements Instrument{
         public boolean equals(RecordedNote other) {
             return this.note == other.note && this.timestamp == other.timestamp && this.octave == other.octave && this.isStart == other.isStart;
         }
-    }
+    }//end of class RecordedNote
+    
     //method headers
     
     // Default constructor
@@ -73,9 +124,13 @@ public class RecordedPlaybackModel implements Instrument{
     }
     
     public static void main(String[] args) {
+        //clock class
+        
+        
         final boolean START_NOTE = true;
         final boolean STOP_NOTE = false;
         final int DEFAULT_OCTAVE = 4;
+        
         
         RecordedPlaybackModel recording = new RecordedPlaybackModel(null); // create a fake clock that extends Clock and pass it in here to control the time
         recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
