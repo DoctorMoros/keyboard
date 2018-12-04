@@ -85,13 +85,13 @@ public class RecordedPlaybackModel implements MusicPlayer {
         return text + "}";
     }
 
-    public void startNote(int octave, KeyboardModel.Note note){
+    public void startNote(int octave, KeyboardModel.Note note, int volume){
         if(startTime == 0)
             startTime = this.clock.millis();
         melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, true));
     }
 
-    public void stopNote(int octave, KeyboardModel.Note note){
+    public void stopNote(int octave, KeyboardModel.Note note, int volume){
         if(startTime == 0)
             startTime = this.clock.millis();
         melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, false));
@@ -111,17 +111,17 @@ public class RecordedPlaybackModel implements MusicPlayer {
 
         RecordedPlaybackModel recording = new RecordedPlaybackModel(clock);
 
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E, 64);
         clock.advanceTime();
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.E, 64);
         clock.advanceTime();
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.C, 64);
         clock.advanceTime();
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.C, 64);
         clock.advanceTime();
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp, 64);
         clock.advanceTime();
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp, 64);
 
        //confirm that the notes were recorded.
        boolean testsPass = true;
