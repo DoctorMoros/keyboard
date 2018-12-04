@@ -11,6 +11,7 @@ import javax.swing.JSlider;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.*;
+import javax.swing.event.ChangeListener;
 
 public class KeyboardView extends javax.swing.JFrame {
     /**
@@ -278,6 +279,10 @@ public class KeyboardView extends javax.swing.JFrame {
         playButton.addActionListener(listen);
         octaveComboBox.addActionListener(listen);
         instrumentComboBox.addActionListener(listen);
+    }
+    
+    public void addChangeListener(ChangeListener listen){
+        jSlider1.addChangeListener(listen);
     }
 
     public boolean isPlay(Object source){
