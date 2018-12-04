@@ -1,6 +1,3 @@
-/**
- * @authors Yorick, Glen, Martin
- */
 package keyboard;
 
 import java.util.logging.Level;

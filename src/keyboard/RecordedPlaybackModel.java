@@ -1,107 +1,30 @@
+/** 
+ * if recording: then store played note, time difference from mouse e
+ * if play: then read note, duration of each key press from ArrayList and startNote then endNote to play
+ **/
+
 package keyboard;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Objects;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 
 
 //class
 public class RecordedPlaybackModel implements Instrument{
-    //Clock clock;
-    FakeClock clock;
-        
+    private Clock clock;
+    public ArrayList<RecordedNote> melody = new ArrayList<RecordedNote>();
     
     public static class FakeClock extends Clock{
-    //PRIVATE
-    private int hr; //store hours
-    private int min;  //store minutes
-    private int sec; //store seconds
-    //method variables
-    private final Instant WHEN_STARTED = Instant.now();
-    private final ZoneId DEFAULT_TZONE = ZoneId.systemDefault();
-    private long count = 0;
+        
+        private Instant currentTime;
+        private final ZoneId DEFAULT_TZONE = ZoneId.systemDefault();
   
-        public FakeClock(){
-        setTime(0, 0, 0); //0 start time
-        }
-        
-        public FakeClock(int hours, int minutes, int seconds){
-            setTime(hours, minutes, seconds);
-        }
-        
-        public void setTime (int hours, int minutes, int seconds){
-            if (0 <= hours && hours < 24)
-                hr = hours;
-            else
-                hr = 0;
-  
-            if (0 <= minutes && minutes < 60)
-                min = minutes;
-            else
-                min = 0;
-  
-            if (0 <= seconds && seconds < 60)
-                sec = seconds;
-            else
-                sec = 0;
-        }//end of setTime
-        
-        public void printTime(){
-            if (hr < 10)
-                System.out.print ("0");
-            System.out.print (hr + ":");
-            if (min < 10)
-                System.out.print ("0");
-            System.out.print (min + ":");
-         if (sec < 10)
-                System.out.print ("0");
-            System.out.print (sec);
-        }//printTime
- 
-        
-        /** ACCESSORS **/
-        public int getHours(){
-            return hr;
-        }
-        
-        public int getMinutes(){
-            return min;
-        }
-        
-        public int getSeconds(){
-            return sec;
-        }
-        
-        /** MODIFIERS **/
-        public void incrementSeconds(){
-            sec++;
-            if (sec > 59)
-            {
-                sec = 0;
-                incrementMinutes();  //increment minutes
-            }
-        }//incrSec
-        
-        
-        public void incrementMinutes(){
-            min++;
-            if (min > 59)
-            {
-                min = 0;
-                incrementHours();  //increment hours
-            }
-        }//incrMin
-        
-        public void incrementHours(){
-            hr++;
-            if (hr > 23)
-                hr = 0;
-        }//incrHr
+        //DEFAULT CONSTRUCTOR
+        public FakeClock(){ 
+            currentTime = Instant.parse("2018-12-03T00:00:00.00Z");
+        }    
         
         
         /** OVERRIDDEN METHODS **/
@@ -112,29 +35,29 @@ public class RecordedPlaybackModel implements Instrument{
 
         @Override
         public Clock withZone(ZoneId zone){
-            return Clock.fixed(WHEN_STARTED, zone);
+            return Clock.fixed(currentTime, zone);
         }
 
         @Override
         public Instant instant(){
-            return nextInstant();
+            return currentTime;
         }
         
-        private Instant nextInstant(){
-            ++count;
-            return WHEN_STARTED.plusSeconds(count);
+        private void advanceTime(){
+            currentTime = currentTime.plusMillis(1000);
         }
-    
-    }//end of class FakeClock
+
+        
+    //END
+    }//END OF CLASS FAKECLOCK
     
     public static class RecordedNote {
         KeyboardModel.Note note;
-        ArrayList noteSignatures = new ArrayList();
         long timestamp;
         int octave;
         boolean isStart;
         
-        
+        //initialzation constructor
         public RecordedNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
             this.note = note;
             this.timestamp = timestamp;
@@ -142,63 +65,106 @@ public class RecordedPlaybackModel implements Instrument{
             this.isStart = isStart;
         }
         
-        public boolean equals(RecordedNote other){
-            return this.note == other.note && this.timestamp == other.timestamp && this.octave == other.octave && this.isStart == other.isStart;
+        public String toString(){
+            return "RecordedNote{note="+this.note+", timestamp="+this.timestamp+", octave="+this.octave+", isStart="+this.isStart+"}";
         }
-    }//end of class RecordedNote
-    
-    //method headers
-    
+        
+        public boolean equals(RecordedNote other){
+            if (other == null) return false;
+            return this.note == other.note && this.timestamp == other.timestamp && this.octave == other.octave && this.isStart == other.isStart;
+        }//end of equals
+        
+    }//END OF CLASS RECORDEDNOTE
+
     // Default constructor
     public RecordedPlaybackModel() {
         this.clock = Clock.systemDefaultZone();
     }
     
     // Tests constructor used for injecting a clock.
-    protected RecordedPlaybackModel(Clock clock){
+    protected RecordedPlaybackModel(FakeClock clock){
         this.clock = clock;
     }
     
     private RecordedNote getNotes(int index) {
-        return null;
+        if(index >= melody.size()){
+            return null;
+        }
+        return melody.get(index);
     }
     
     public void startNote(int octave, KeyboardModel.Note note){
         long now = this.clock.millis();
+        
     }
     
     public void stopNote(int octave, KeyboardModel.Note note){
         
     }
     
+    
+  /** 
+    * if toggleButtonRecord on then:
+    * timeDifference() between each mouse event 
+    * pass note array on each mouse event 
+    * 
+    * 
+   **/
+    
     public static void main(String[] args) {
-        //clock class
-        
+        //Test FakeClock class
+        FakeClock clock = new FakeClock();
         
         final boolean START_NOTE = true;
         final boolean STOP_NOTE = false;
         final int DEFAULT_OCTAVE = 4;
         
+        
         // create a fake clock that extends Clock and pass it in here to control the time
-        RecordedPlaybackModel recording = new RecordedPlaybackModel(null); 
+        RecordedPlaybackModel recording = new RecordedPlaybackModel(clock); 
         
         recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
+        clock.advanceTime();
         recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
+        clock.advanceTime();
         recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
+        clock.advanceTime();
         recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
+        clock.advanceTime();
         recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
+        clock.advanceTime();
         recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
+         
+       //confirm that the notes were recorded.
+       boolean testsPass = true;
+       
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 0l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(0));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 1000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(1));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.C, 2000l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(2));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.C, 3000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(3));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.Asharp, 4000l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(4));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.Asharp, 5000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(5));
         
-        //confirm that the notes were recorded
-        if (!recording.getNotes(0).equals(new RecordedNote(KeyboardModel.Note.E, 0l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(1).equals(new RecordedNote(KeyboardModel.Note.E, 1000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(2).equals(new RecordedNote(KeyboardModel.Note.C, 2000l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(3).equals(new RecordedNote(KeyboardModel.Note.C, 3000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(4).equals(new RecordedNote(KeyboardModel.Note.Asharp, 4000l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(5).equals(new RecordedNote(KeyboardModel.Note.Asharp, 5000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
+       if (testsPass) {
+           System.out.println("ALL TESTS PASS!!!");
+       }
+        
+    }//end of main
+    
+    private static boolean matches(RecordedNote expected, RecordedNote actual) {
+        boolean result = expected.equals(actual);
+        if (!result) {
+            System.out.println("Test failed: these do not match:");
+            System.out.println("Expected: " + expected);
+            System.out.println("Actual: " + actual);
+        }
+        return result;
     }
     
     
     //test
     //logic
-}
+
+}//end of class RecordedPlaybackModel
+
+
