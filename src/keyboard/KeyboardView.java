@@ -3,10 +3,10 @@
  * 
  */
 package keyboard;
-import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.*;
+import javax.swing.JToggleButton;
 
 public class KeyboardView extends javax.swing.JFrame {
     /**
@@ -204,7 +204,28 @@ public class KeyboardView extends javax.swing.JFrame {
         aSharp.addMouseListener(listen);
         b.addMouseListener(listen);
     }
+    
+    public void addActionListener(ActionListener listen){
+        recordButton.addActionListener(listen);
+        playButton.addActionListener(listen);
+    }
        
+    public boolean isPlay(Object source){
+        return source == playButton;
+    }
+    
+    public boolean isRecord(Object source){
+        return source == recordButton;
+    }
+    
+    public boolean isRecordEnabled(){
+        return recordButton.isSelected();
+    }
+    
+    public boolean isPlayEnabled(){
+        return playButton.isSelected();
+    }
+    
     //set key color when pressed
     public void setKeyColor(KeyboardModel.Note note, Color color){
         Canvas canvas = null;
@@ -304,7 +325,7 @@ public class KeyboardView extends javax.swing.JFrame {
         testPassed &= getNote(b) == KeyboardModel.Note.B;
         return testPassed;
     }
-    
+                
     public static void main(String args[]) {
         KeyboardView view = new KeyboardView();
         if(view.getNoteTest()) {

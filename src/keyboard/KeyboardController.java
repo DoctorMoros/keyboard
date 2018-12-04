@@ -5,26 +5,30 @@ import java.awt.Component;
 import java.awt.event.*;
 
 
-public class KeyboardController implements MouseListener{
+public class KeyboardController implements MouseListener, ActionListener{
     public static final int DEFAULT_OCTAVE = 4;
-    private KeyboardModel model;
+    private KeyboardModel keyboard;
     private KeyboardView view;
-
+    private RecordedPlaybackModel recording;
     
-    public KeyboardController(KeyboardModel model, KeyboardView view){
-        this.model = model;
+    public KeyboardController(KeyboardModel keyboard, KeyboardView view){
+        this.keyboard = keyboard;
         this.view = view;
     }
     
     public void mousePressed(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource() );
-        model.startNote(DEFAULT_OCTAVE, note);
+        keyboard.startNote(DEFAULT_OCTAVE, note);
+        if(view.isRecordEnabled())
+            recording.startNote(DEFAULT_OCTAVE, note);
         view.setKeyColor(note, Color.YELLOW);
     }//end of mousePressed
 
     public void mouseReleased(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource() );
-        model.stopNote(DEFAULT_OCTAVE, note);
+        keyboard.stopNote(DEFAULT_OCTAVE, note);
+        if(view.isRecordEnabled())
+            recording.stopNote(DEFAULT_OCTAVE, note);
         switch(note){
             case Csharp:    
             case Dsharp:    
@@ -53,6 +57,18 @@ public class KeyboardController implements MouseListener{
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(view.isRecord(e.getSource())){
+            if(view.isRecordEnabled()){
+                recording = new RecordedPlaybackModel();
+            }
+        }
+        else if(view.isPlay(e.getSource())){
+            System.out.println(recording);
+        }
+    }
     
     private static class FakeKeyboardModel extends KeyboardModel{
         private int octave;
