@@ -1,8 +1,6 @@
-/** 
- * if recording: then store played note, time difference from mouse e
- * if play: then read note, duration of each key press from ArrayList and startNote then endNote to play
- **/
-
+/**
+ * INVARIANT: Receives played note
+ */
 package keyboard;
 
 import java.time.Clock;
@@ -10,11 +8,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-
 //class
 public class RecordedPlaybackModel implements Instrument{
     private Clock clock;
-    public ArrayList<RecordedNote> melody = new ArrayList<RecordedNote>();
+    private ArrayList<RecordedNote> melody = new ArrayList<RecordedNote>();
+    private long startTime = 0;
     
     public static class FakeClock extends Clock{
         
@@ -57,7 +55,6 @@ public class RecordedPlaybackModel implements Instrument{
         int octave;
         boolean isStart;
         
-        //initialzation constructor
         public RecordedNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
             this.note = note;
             this.timestamp = timestamp;
@@ -76,7 +73,6 @@ public class RecordedPlaybackModel implements Instrument{
         
     }//END OF CLASS RECORDEDNOTE
 
-    // Default constructor
     public RecordedPlaybackModel() {
         this.clock = Clock.systemDefaultZone();
     }
@@ -93,34 +89,39 @@ public class RecordedPlaybackModel implements Instrument{
         return melody.get(index);
     }
     
+    public String toString(){
+        String text = "{";
+        for(Object a: melody){
+            text += a.toString();
+        }
+        return text + "}";
+    }
+    
     public void startNote(int octave, KeyboardModel.Note note){
-        long now = this.clock.millis();
-        
+        if(startTime == 0)
+            startTime = this.clock.millis();
+        melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, true));
     }
     
     public void stopNote(int octave, KeyboardModel.Note note){
-        
+        if(startTime == 0)
+            startTime = this.clock.millis();
+        melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, false));
+    }
+    
+    public void addNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
+        RecordedNote testNote = new RecordedNote(note, timestamp, octave, isStart);
+        melody.add(testNote);
     }
     
     
-  /** 
-    * if toggleButtonRecord on then:
-    * timeDifference() between each mouse event 
-    * pass note array on each mouse event 
-    * 
-    * 
-   **/
-    
     public static void main(String[] args) {
-        //Test FakeClock class
         FakeClock clock = new FakeClock();
         
         final boolean START_NOTE = true;
         final boolean STOP_NOTE = false;
         final int DEFAULT_OCTAVE = 4;
-        
-        
-        // create a fake clock that extends Clock and pass it in here to control the time
+
         RecordedPlaybackModel recording = new RecordedPlaybackModel(clock); 
         
         recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
@@ -137,7 +138,6 @@ public class RecordedPlaybackModel implements Instrument{
          
        //confirm that the notes were recorded.
        boolean testsPass = true;
-       
        testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 0l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(0));
        testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 1000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(1));
        testsPass &= matches(new RecordedNote(KeyboardModel.Note.C, 2000l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(2));
@@ -160,11 +160,6 @@ public class RecordedPlaybackModel implements Instrument{
         }
         return result;
     }
-    
-    
-    //test
-    //logic
-
 }//end of class RecordedPlaybackModel
 
 
