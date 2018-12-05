@@ -17,18 +17,15 @@ public class KeyboardController implements MouseListener, ActionListener{
     }
     
     public void mousePressed(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource() );
+        KeyboardModel.Note note = view.getNote(e.getSource());
+        view.setKeyColor(note, Color.YELLOW);
         keyboard.startNote(DEFAULT_OCTAVE, note);
         if(view.isRecordEnabled())
             recording.startNote(DEFAULT_OCTAVE, note);
-        view.setKeyColor(note, Color.YELLOW);
     }//end of mousePressed
 
     public void mouseReleased(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource() );
-        keyboard.stopNote(DEFAULT_OCTAVE, note);
-        if(view.isRecordEnabled())
-            recording.stopNote(DEFAULT_OCTAVE, note);
+        KeyboardModel.Note note = view.getNote(e.getSource());
         switch(note){
             case Csharp:    
             case Dsharp:    
@@ -47,6 +44,9 @@ public class KeyboardController implements MouseListener, ActionListener{
                 view.setKeyColor(note, Color.WHITE);
                 break;
         }
+        keyboard.stopNote(DEFAULT_OCTAVE, note);
+        if(view.isRecordEnabled())
+            recording.stopNote(DEFAULT_OCTAVE, note);
     }//end of mousereleased
 
     @Override 
