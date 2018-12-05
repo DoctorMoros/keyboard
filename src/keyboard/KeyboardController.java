@@ -2,14 +2,20 @@ package keyboard;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-
-public class KeyboardController implements MouseListener, ActionListener{
+public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
     public static final int DEFAULT_OCTAVE = 4;
     private KeyboardModel keyboard;
     private KeyboardView view;
     private RecordedPlaybackModel recording;
+    private int volume = 64;
     
     public KeyboardController(KeyboardModel keyboard, KeyboardView view){
         this.keyboard = keyboard;
@@ -19,10 +25,10 @@ public class KeyboardController implements MouseListener, ActionListener{
     public void mousePressed(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource());
         view.setKeyColor(note, Color.YELLOW);
-        keyboard.startNote(DEFAULT_OCTAVE, note);
+        keyboard.startNote(DEFAULT_OCTAVE, note, volume);
         if(view.isRecordEnabled())
-            recording.startNote(DEFAULT_OCTAVE, note);
-    }//end of mousePressed
+            recording.startNote(DEFAULT_OCTAVE, note, volume);
+    }
 
     public void mouseReleased(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource());
@@ -44,10 +50,10 @@ public class KeyboardController implements MouseListener, ActionListener{
                 view.setKeyColor(note, Color.WHITE);
                 break;
         }
-        keyboard.stopNote(DEFAULT_OCTAVE, note);
+        keyboard.stopNote(DEFAULT_OCTAVE, note, volume);
         if(view.isRecordEnabled())
-            recording.stopNote(DEFAULT_OCTAVE, note);
-    }//end of mousereleased
+            recording.stopNote(DEFAULT_OCTAVE, note, volume);
+    }
 
     @Override 
     public void mouseClicked(MouseEvent e) {}
@@ -70,6 +76,13 @@ public class KeyboardController implements MouseListener, ActionListener{
         }        
         if(view.isInstrument(e.getSource())){
             keyboard.setInstrument(view.getSelectedInstrument());
+        }
+    }
+    
+    @Override
+    public void stateChanged(ChangeEvent event){
+        if (event.getSource() instanceof javax.swing.JSlider) {
+            volume = ((JSlider)event.getSource()).getValue();
         }
     }
     
