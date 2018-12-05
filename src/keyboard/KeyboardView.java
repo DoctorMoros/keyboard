@@ -4,19 +4,20 @@
  * @authors Yorick, Glen, Martin
  */
 package keyboard;
-import javax.swing.JFrame;
+
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JSlider;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import javax.swing.event.ChangeListener;
 
 public class KeyboardView extends javax.swing.JFrame {
+
     /**
      * Creates new form keyboard
      */
+    @SuppressWarnings("unchecked")
     public KeyboardView() {
         initComponents();
         instrumentComboBox.setModel(new DefaultComboBoxModel(KeyboardModel.Instrument.values()));
@@ -229,8 +230,6 @@ public class KeyboardView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas a;
     private java.awt.Canvas aSharp;
@@ -260,7 +259,7 @@ public class KeyboardView extends javax.swing.JFrame {
     static final int VOLUME_INIT = 64;
 
     @Override
-    public void addMouseListener(MouseListener listen){
+    public void addMouseListener(MouseListener listen) {
         c.addMouseListener(listen);
         cSharp.addMouseListener(listen);
         d.addMouseListener(listen);
@@ -275,55 +274,53 @@ public class KeyboardView extends javax.swing.JFrame {
         b.addMouseListener(listen);
     }
 
-    public void addActionListener(ActionListener listen){
+    public void addActionListener(ActionListener listen) {
         recordButton.addActionListener(listen);
         playButton.addActionListener(listen);
         octaveComboBox.addActionListener(listen);
         instrumentComboBox.addActionListener(listen);
     }
-    
-    public void addChangeListener(ChangeListener listen){
+
+    public void addChangeListener(ChangeListener listen) {
         jSlider1.addChangeListener(listen);
     }
 
-    public boolean isPlay(Object source){
+    public boolean isPlay(Object source) {
         return source == playButton;
     }
 
-    public boolean isRecord(Object source){
+    public boolean isRecord(Object source) {
         return source == recordButton;
     }
-    
-    public boolean isOctave(Object source){
+
+    public boolean isOctave(Object source) {
         return source == octaveComboBox;
     }
-    
-    public boolean isInstrument(Object source){
+
+    public boolean isInstrument(Object source) {
         return source == instrumentComboBox;
     }
 
-    public boolean isRecordEnabled(){
+    public boolean isRecordEnabled() {
         return recordButton.isSelected();
     }
 
-    public boolean isPlayEnabled(){
+    public boolean isPlayEnabled() {
         return playButton.isSelected();
     }
-    
-    public KeyboardModel.Instrument getSelectedInstrument(){
+
+    public KeyboardModel.Instrument getSelectedInstrument() {
         return (KeyboardModel.Instrument) instrumentComboBox.getSelectedItem();
     }
-    
-    public int getSelectedOctave(){
-        return Integer.parseInt((String)octaveComboBox.getSelectedItem());
+
+    public int getSelectedOctave() {
+        return Integer.parseInt((String) octaveComboBox.getSelectedItem());
     }
-    
-    //public KeyboardModel.
-    
+
     //set key color when pressed
-    public void setKeyColor(KeyboardModel.Note note, Color color){
+    public void setKeyColor(KeyboardModel.Note note, Color color) {
         Canvas canvas = null;
-        switch(note){
+        switch (note) {
             case C:
                 canvas = c;
                 break;
@@ -364,7 +361,7 @@ public class KeyboardView extends javax.swing.JFrame {
         canvas.setBackground(color);
     }
 
-    public KeyboardModel.Note getNote(Object source){
+    public KeyboardModel.Note getNote(Object source) {
         if (source == a) {
             return KeyboardModel.Note.A;
         }
@@ -403,7 +400,8 @@ public class KeyboardView extends javax.swing.JFrame {
         }
         return null;
     }
-    private boolean getNoteTest(){
+
+    private boolean getNoteTest() {
         boolean testPassed;
         testPassed = getNote(c) == KeyboardModel.Note.C;
         testPassed &= getNote(cSharp) == KeyboardModel.Note.Csharp;
@@ -422,10 +420,9 @@ public class KeyboardView extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         KeyboardView view = new KeyboardView();
-        if(view.getNoteTest()) {
+        if (view.getNoteTest()) {
             System.out.println("View test passed.");
-        }
-        else {
+        } else {
             System.out.println("getNote test failed");
         }
     }

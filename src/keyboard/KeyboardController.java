@@ -1,4 +1,5 @@
 package keyboard;
+
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
@@ -9,10 +10,11 @@ import java.awt.event.MouseListener;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.util.ArrayDeque;
 
 public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
-    private KeyboardModel keyboard;
-    private KeyboardView view;
+    private final KeyboardModel keyboard;
+    private final KeyboardView view;
     private RecordedPlaybackModel recording;
     private int volume = 64;
     private int octave = 3;
@@ -22,6 +24,7 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         this.view = view;
     }
     
+    @Override
     public void mousePressed(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource());
         view.setKeyColor(note, Color.YELLOW);
@@ -30,6 +33,7 @@ public class KeyboardController implements MouseListener, ActionListener, Change
             recording.startNote(octave, note, volume);
     }
 
+    @Override
     public void mouseReleased(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource());
         switch(note){
@@ -89,26 +93,42 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         }
     }
     
-    private static class FakeKeyboardModel extends KeyboardModel{
-        private int octave;
-        private Note note;
-        private boolean noteOn;
+    public static class FakeKeyboardModel extends KeyboardModel{
+        private final ArrayDeque<Expectation> q;
         public FakeKeyboardModel(){
-            super(new KeyboardModel.FakeMidiChannel() );
+            super(new KeyboardModel.FakeMidiChannel());
+            q = new ArrayDeque<>();
         }
         
         public void startNote(int octave, Note note){
-            this.octave = octave;
-            this.note = note;
-            this.noteOn = true;
+            Expectation expected = q.poll();
+            if(!new Expectation(note, 0, octave, true).equals(expected)){
+                throw new RuntimeException();
+            }
         }
         public void stopNote(int octave, Note note){
-            this.octave = octave;
-            this.note = note;
-            this.noteOn = false;
+            Expectation expected = q.poll();
+            if(!new Expectation(note, 0, octave, false).equals(expected)){
+                throw new RuntimeException();
+            }
         }
-        public boolean expect(int octave, Note note, boolean noteOn) {
-            return this.octave == octave && this.note==note && this.noteOn == this.noteOn;
+        public void expect(Note note, long timestamp, int octave, boolean noteOn) {
+            q.add(new Expectation(note, timestamp, octave, noteOn));
+        }
+        public class Expectation {
+            private final int octave;
+            private final KeyboardModel.Note note;
+            private final boolean noteOn;
+            private final long timestamp;
+            public Expectation(KeyboardModel.Note note, long timestamp ,int octave, boolean noteOn) {
+                this.note = note;
+                this.timestamp = timestamp;
+                this.octave = octave;
+                this.noteOn = noteOn;
+            }
+            public boolean equals(Expectation other){
+                return this.octave == other.octave || this.note == other.note || this.noteOn == other.noteOn  || this.timestamp == other.timestamp;
+            }
         }
     }
     
@@ -116,10 +136,12 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         private KeyboardModel.Note note, expectedNote;
         private Color color;
         private Object source;
+        @Override
         public void setKeyColor(KeyboardModel.Note note, Color color){
             this.note = note;
             this.color = color;
         }
+        @Override
         public KeyboardModel.Note getNote(Object source){
             this.source = source;
             return expectedNote;
@@ -141,24 +163,26 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         KeyboardController controller = new KeyboardController(model, view);
         Component c = new Button();
         
+        // Expect the notes to be called in order on the keyboard.
+        model.expect(KeyboardModel.Note.C, 0, 4, true);
+        model.expect(KeyboardModel.Note.C, 0, 4, false);
+        model.expect(KeyboardModel.Note.Fsharp, 0, 4, false);
+        
         // C Key is pressed.
         view.setExpectedNote(KeyboardModel.Note.C);
         controller.mousePressed(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println(model.expect(4, KeyboardModel.Note.C, true));
         System.out.println(view.expect(KeyboardModel.Note.C, Color.YELLOW));
         System.out.println(view.expect(c));
         
         // C Key is released.
         view.setExpectedNote(KeyboardModel.Note.C);
         controller.mouseReleased(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println(model.expect(4, KeyboardModel.Note.C, false));
         System.out.println(view.expect(KeyboardModel.Note.C, Color.WHITE));
         System.out.println(view.expect(c));
         
         // F-sharp is released.
         view.setExpectedNote(KeyboardModel.Note.Fsharp);
         controller.mouseReleased(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println(model.expect(4, KeyboardModel.Note.Fsharp, false));
         System.out.println(view.expect(KeyboardModel.Note.Fsharp, Color.BLACK));
         System.out.println(view.expect(c));
 

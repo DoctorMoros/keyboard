@@ -1,6 +1,6 @@
 package keyboard;
+
 import javax.sound.midi.*;
-import keyboard.KeyboardModel.Instrument;
 
 public class KeyboardModel implements MusicPlayer {
     private static FakeMidiChannel fake;
