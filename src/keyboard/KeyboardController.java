@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JSlider;
@@ -12,7 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.util.ArrayDeque;
 
-public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
+public class KeyboardController implements MouseListener, ActionListener, ChangeListener, KeyListener {
     private final KeyboardModel keyboard;
     private final KeyboardView view;
     private RecordedPlaybackModel recording;
@@ -26,19 +28,14 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         this.view = view;
     }
     
-    @Override
-    public void mousePressed(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource());
+    private void playNote(KeyboardModel.Note note) {
         view.setKeyColor(note, Color.YELLOW);
         keyboard.startNote(octave, note, volume);
         if(isRecording) {
             recording.startNote(octave, note, volume);
         }
     }
-
-    @Override
-    public void mouseReleased(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource());
+    private void stopNote(KeyboardModel.Note note) {
         switch(note){
             case Csharp:    
             case Dsharp:    
@@ -62,13 +59,21 @@ public class KeyboardController implements MouseListener, ActionListener, Change
             recording.stopNote(octave, note, volume);
         }
     }
+    
+    @Override
+    public void mousePressed(MouseEvent e){
+        playNote(view.getNote(e.getSource()));
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e){
+        stopNote(view.getNote(e.getSource()));
+    }
 
     @Override 
     public void mouseClicked(MouseEvent e) {}
-
     @Override
     public void mouseEntered(MouseEvent e) {}
-
     @Override
     public void mouseExited(MouseEvent e) {}
 
@@ -101,6 +106,117 @@ public class KeyboardController implements MouseListener, ActionListener, Change
     public void stateChanged(ChangeEvent event){
         if (event.getSource() instanceof javax.swing.JSlider) {
             volume = ((JSlider)event.getSource()).getValue();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+    
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyChar()){
+            case 'a':
+            case 'A':
+                playNote(KeyboardModel.Note.C);
+                break;
+            case 'w':
+            case 'W':
+                playNote(KeyboardModel.Note.Csharp);
+                break;
+            case 's':
+            case 'S':
+                playNote(KeyboardModel.Note.D);
+                break;
+            case 'e':
+            case 'E':
+                playNote(KeyboardModel.Note.Dsharp);
+                break;
+            case 'd':
+            case 'D':
+                playNote(KeyboardModel.Note.E);
+                break;
+            case 'f':
+            case 'F':
+                playNote(KeyboardModel.Note.F);
+                break;
+            case 't':
+            case 'T':
+                playNote(KeyboardModel.Note.Fsharp);
+                break;
+            case 'g':
+            case 'G':
+                playNote(KeyboardModel.Note.G);
+                break;
+            case 'y':
+            case 'Y':
+                playNote(KeyboardModel.Note.Gsharp);
+                break;
+            case 'h':
+            case 'H':
+                playNote(KeyboardModel.Note.A);
+                break;
+            case 'u':
+            case 'U':
+                playNote(KeyboardModel.Note.Asharp);
+                break;
+            case 'j':
+            case 'J':
+                playNote(KeyboardModel.Note.B);
+                break;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        switch (e.getKeyChar()){
+            case 'a':
+            case 'A':
+                stopNote(KeyboardModel.Note.C);
+                break;
+            case 'w':
+            case 'W':
+                stopNote(KeyboardModel.Note.Csharp);
+                break;
+            case 's':
+            case 'S':
+                stopNote(KeyboardModel.Note.D);
+                break;
+            case 'e':
+            case 'E':
+                stopNote(KeyboardModel.Note.Dsharp);
+                break;
+            case 'd':
+            case 'D':
+                stopNote(KeyboardModel.Note.E);
+                break;
+            case 'f':
+            case 'F':
+                stopNote(KeyboardModel.Note.F);
+                break;
+            case 't':
+            case 'T':
+                stopNote(KeyboardModel.Note.Fsharp);
+                break;
+            case 'g':
+            case 'G':
+                stopNote(KeyboardModel.Note.G);
+                break;
+            case 'y':
+            case 'Y':
+                stopNote(KeyboardModel.Note.Gsharp);
+                break;
+            case 'h':
+            case 'H':
+                stopNote(KeyboardModel.Note.A);
+                break;
+            case 'u':
+            case 'U':
+                stopNote(KeyboardModel.Note.Asharp);
+                break;
+            case 'j':
+            case 'J':
+                stopNote(KeyboardModel.Note.B);
+                break;
         }
     }
     

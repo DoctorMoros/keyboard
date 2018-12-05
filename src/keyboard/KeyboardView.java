@@ -9,6 +9,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import javax.swing.event.ChangeListener;
 
@@ -423,6 +424,40 @@ public class KeyboardView extends javax.swing.JFrame {
 
     public void addChangeListener(ChangeListener listen) {
         jSlider1.addChangeListener(listen);
+    }
+    
+    @Override
+    public void addKeyListener(KeyListener listen){
+        super.addKeyListener(listen);
+        a.addKeyListener(listen);
+        aSharp.addKeyListener(listen);
+        b.addKeyListener(listen);
+        c.addKeyListener(listen);
+        cSharp.addKeyListener(listen);
+        d.addKeyListener(listen);
+        dSharp.addKeyListener(listen);
+        e.addKeyListener(listen);
+        f.addKeyListener(listen);
+        fSharp.addKeyListener(listen);
+        g.addKeyListener(listen);
+        gSharp.addKeyListener(listen);
+        imgTreble.addKeyListener(listen);
+        instrumentComboBox.addKeyListener(listen);
+        jLabel1.addKeyListener(listen);
+        jLabel2.addKeyListener(listen);
+        jLabel3.addKeyListener(listen);
+        jLabel4.addKeyListener(listen);
+        jPanel1.addKeyListener(listen);
+        jPanel2.addKeyListener(listen);
+        jPanel3.addKeyListener(listen);
+        jPanel4.addKeyListener(listen);
+        jPanel5.addKeyListener(listen);
+        jPanel6.addKeyListener(listen);
+        jPanel7.addKeyListener(listen);
+        jSlider1.addKeyListener(listen);
+        octaveComboBox.addKeyListener(listen);
+        playButton.addKeyListener(listen);
+        recordButton.addKeyListener(listen);
     }
 
     public boolean isPlay(Object source) {
