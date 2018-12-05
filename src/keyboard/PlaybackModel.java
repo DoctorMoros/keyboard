@@ -21,14 +21,14 @@ public class PlaybackModel implements Runnable{
             long time = current.timestamp - last.timestamp;
             try {
                 Thread.sleep(time);
-            } catch(InterruptedException e){
+            } catch(InterruptedException unused){
                 keyboard.allNotesOff();
                 return;
             }
             if(current.isStart)
-                keyboard.startNote(last.octave, last.note, 64);
+                keyboard.startNote(current.octave, current.note, 64);
             else
-                keyboard.stopNote(last.octave, last.note, 64);
+                keyboard.stopNote(current.octave, current.note, 64);
             last = current;
         }
     }
@@ -47,14 +47,14 @@ public class PlaybackModel implements Runnable{
         
         //Expected output
         KeyboardController.FakeKeyboardModel keyboard = new KeyboardController.FakeKeyboardModel();
-        keyboard.expect(KeyboardModel.Note.C, 0, 4, true);
-        keyboard.expect(KeyboardModel.Note.C, 10, 4, false);
-        keyboard.expect(KeyboardModel.Note.Fsharp, 20, 4, true);
-        keyboard.expect(KeyboardModel.Note.D, 20, 4, true);
-        keyboard.expect(KeyboardModel.Note.Fsharp, 30, 4, false);
-        keyboard.expect(KeyboardModel.Note.D, 55, 4, false);
-        keyboard.expect(KeyboardModel.Note.G, 57, 7, true);
-        keyboard.expect(KeyboardModel.Note.G, 69, 7, false);
+        keyboard.expect(KeyboardModel.Note.C, 4, true);
+        keyboard.expect(KeyboardModel.Note.C, 4, false);
+        keyboard.expect(KeyboardModel.Note.Fsharp,  4, true);
+        keyboard.expect(KeyboardModel.Note.D, 4, true);
+        keyboard.expect(KeyboardModel.Note.Fsharp, 4, false);
+        keyboard.expect(KeyboardModel.Note.D, 4, false);
+        keyboard.expect(KeyboardModel.Note.G, 7, true);
+        keyboard.expect(KeyboardModel.Note.G, 7, false);
         
         //Start playback with timeout of 1 second
         PlaybackModel player = new PlaybackModel(keyboard, recording);
