@@ -12,13 +12,10 @@ public class WelcomeController implements WindowListener, ActionListener {
     private final PlaybackModel boatPlayback;
     private final PlaybackModel maryPlayback;
     private final PlaybackModel birthdayPlayback;
-    private final PlaybackModel jinglePlayback;
-    private Thread jingleThread = new Thread();
     private Thread boatThread = new Thread();
     private Thread maryThread = new Thread();
     private Thread birthdayThread = new Thread();
     private boolean maryEnabled = false;
-    private boolean jingleEnabled = false;
     private boolean boatEnabled = false;
     private boolean birthdayEnabled = false;
     
@@ -29,7 +26,6 @@ public class WelcomeController implements WindowListener, ActionListener {
         boatPlayback = new PlaybackModel(keyboard, createBoat());
         maryPlayback = new PlaybackModel(keyboard, createMary());
         birthdayPlayback = new PlaybackModel(keyboard, createBirthday());
-        jinglePlayback = new PlaybackModel(keyboard, createJingle());
     }
     @Override
     public void windowOpened(WindowEvent we) {}
@@ -78,16 +74,6 @@ public class WelcomeController implements WindowListener, ActionListener {
                 birthdayThread = new Thread(birthdayPlayback);
                 birthdayThread.start();
                 birthdayEnabled = true;
-            }
-        }
-        if(welcomeView.isJingle(ae.getSource())){
-            if(jingleEnabled){
-                jingleThread.interrupt();
-                jingleEnabled = false;
-            } else{ 
-                jingleThread = new Thread(jinglePlayback);
-                jingleThread.start();
-                jingleEnabled = true;
             }
         }
     }
@@ -594,24 +580,5 @@ public class WelcomeController implements WindowListener, ActionListener {
         time += WHOLE;
         mary.addNote(KeyboardModel.Note.C, time, OCTAVE, IS_STOP);
         return mary;
-    }
-    
-    public final RecordedPlaybackModel createJingle(){
-        final boolean IS_START = true;
-        final boolean IS_STOP = false;
-        final long GAP = 25;
-        final long WHOLE = 1200 - GAP;
-        final long MINIM = 600 - GAP;
-        final long CROTCHET = 300 - GAP;
-        final long QUAVER = 150 - GAP;
-        final int OCTAVE = 4;
-        
-        long time = 0;
-        RecordedPlaybackModel jingle = new RecordedPlaybackModel();
-        jingle.addNote(KeyboardModel.Note.E, time, OCTAVE, IS_START);
-        time += CROTCHET;
-        jingle.addNote(KeyboardModel.Note.E, time, OCTAVE, IS_STOP);
-        time += GAP;
-        return jingle;
     }
 }
