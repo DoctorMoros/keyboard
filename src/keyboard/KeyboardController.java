@@ -11,11 +11,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
-    public static final int DEFAULT_OCTAVE = 4;
     private KeyboardModel keyboard;
     private KeyboardView view;
     private RecordedPlaybackModel recording;
     private int volume = 64;
+    private int octave = 3;
     
     public KeyboardController(KeyboardModel keyboard, KeyboardView view){
         this.keyboard = keyboard;
@@ -25,9 +25,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
     public void mousePressed(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource());
         view.setKeyColor(note, Color.YELLOW);
-        keyboard.startNote(DEFAULT_OCTAVE, note, volume);
+        keyboard.startNote(octave, note, volume);
         if(view.isRecordEnabled())
-            recording.startNote(DEFAULT_OCTAVE, note, volume);
+            recording.startNote(octave, note, volume);
     }
 
     public void mouseReleased(MouseEvent e){
@@ -50,9 +50,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
                 view.setKeyColor(note, Color.WHITE);
                 break;
         }
-        keyboard.stopNote(DEFAULT_OCTAVE, note, volume);
+        keyboard.stopNote(octave, note, volume);
         if(view.isRecordEnabled())
-            recording.stopNote(DEFAULT_OCTAVE, note, volume);
+            recording.stopNote(octave, note, volume);
     }
 
     @Override 
@@ -76,6 +76,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         }        
         if(view.isInstrument(e.getSource())){
             keyboard.setInstrument(view.getSelectedInstrument());
+        }
+        if(view.isOctave(e.getSource())){
+            octave = view.getSelectedOctave();
         }
     }
     

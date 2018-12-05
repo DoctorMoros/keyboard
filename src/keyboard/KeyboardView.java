@@ -110,6 +110,7 @@ public class KeyboardView extends javax.swing.JFrame {
         jLabel1.setText("Volume");
 
         octaveComboBox.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        octaveComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "4", "5", "6", "7", "8", "9" }));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Octave");
@@ -312,6 +313,12 @@ public class KeyboardView extends javax.swing.JFrame {
     public KeyboardModel.Instrument getSelectedInstrument(){
         return (KeyboardModel.Instrument) instrumentComboBox.getSelectedItem();
     }
+    
+    public int getSelectedOctave(){
+        return Integer.parseInt((String)octaveComboBox.getSelectedItem());
+    }
+    
+    //public KeyboardModel.
     
     //set key color when pressed
     public void setKeyColor(KeyboardModel.Note note, Color color){
