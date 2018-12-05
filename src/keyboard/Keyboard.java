@@ -39,6 +39,7 @@ public class Keyboard {
         keyboardView.addMouseListener(controller);
         keyboardView.addActionListener(controller);
         keyboardView.addChangeListener(controller);
+        keyboardView.addKeyListener(controller);
         
         WelcomeController welcomeController = new WelcomeController(keyboardModel, keyboardView, welcomeView);
         welcomeView.addActionListener(welcomeController);
