@@ -52,10 +52,10 @@ public class KeyboardModel implements MusicPlayer {
     public KeyboardModel() throws MidiUnavailableException {
       synthesizer = MidiSystem.getSynthesizer();
       synthesizer.open();
-      channel = synthesizer.getChannels()[Instrument.Piano.getMidiCode()];
+      channel = synthesizer.getChannels()[0];
     }    
-    public void setInstrument(Instrument instr){
-        channel = synthesizer.getChannels()[instr.getMidiCode()];
+    public void setInstrument(Instrument instrument){
+        channel.programChange(instrument.getMidiCode());
     }
 
     private static void playNote(Note note, int duration) throws Exception {
