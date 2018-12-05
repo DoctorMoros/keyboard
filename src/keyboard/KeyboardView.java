@@ -11,7 +11,6 @@ import javax.swing.JSlider;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.event.*;
-import javax.swing.event.ChangeListener;
 
 public class KeyboardView extends javax.swing.JFrame {
     /**
@@ -280,10 +279,6 @@ public class KeyboardView extends javax.swing.JFrame {
         octaveComboBox.addActionListener(listen);
         instrumentComboBox.addActionListener(listen);
     }
-    
-    public void addChangeListener(ChangeListener listen){
-        jSlider1.addChangeListener(listen);
-    }
 
     public boolean isPlay(Object source){
         return source == playButton;
@@ -292,6 +287,14 @@ public class KeyboardView extends javax.swing.JFrame {
     public boolean isRecord(Object source){
         return source == recordButton;
     }
+    
+    public boolean isOctave(Object source){
+        return source == octaveComboBox;
+    }
+    
+    public boolean isInstrument(Object source){
+        return source == instrumentComboBox;
+    }
 
     public boolean isRecordEnabled(){
         return recordButton.isSelected();
@@ -299,6 +302,10 @@ public class KeyboardView extends javax.swing.JFrame {
 
     public boolean isPlayEnabled(){
         return playButton.isSelected();
+    }
+    
+    public KeyboardModel.Instrument getSelectedInstrument(){
+        return (KeyboardModel.Instrument) instrumentComboBox.getSelectedItem();
     }
     
     //set key color when pressed

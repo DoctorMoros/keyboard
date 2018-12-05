@@ -37,7 +37,6 @@ public class Keyboard {
         KeyboardController controller = new KeyboardController(model, view);
         view.addMouseListener(controller);
         view.addActionListener(controller);
-        view.addChangeListener(controller);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable(){
