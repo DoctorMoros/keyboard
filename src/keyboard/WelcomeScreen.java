@@ -5,6 +5,8 @@
  */
 package keyboard;
 
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author Yorick
@@ -16,8 +18,29 @@ public class WelcomeScreen extends javax.swing.JFrame {
      */
     public WelcomeScreen() {
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
+    public void addActionListener(ActionListener listen){
+        jingleButton.addActionListener(listen);
+        birthdayButton.addActionListener(listen);
+        maryButton.addActionListener(listen);
+        boatButton.addActionListener(listen);
+    }
+    
+    public boolean isJingle(Object source){
+        return source == jingleButton;
+    }
+    public boolean isMary(Object source){
+        return source == maryButton;
+    }
+    public boolean isBirthday(Object source){
+        return source == birthdayButton;
+    }
+    public boolean isBoat(Object source){
+        return source == boatButton;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,7 +50,6 @@ public class WelcomeScreen extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
         jSeparator5 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -36,19 +58,18 @@ public class WelcomeScreen extends javax.swing.JFrame {
         jSeparator6 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jToggleButton4 = new javax.swing.JToggleButton();
+        jingleButton = new javax.swing.JToggleButton();
         jSeparator7 = new javax.swing.JSeparator();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        birthdayButton = new javax.swing.JToggleButton();
         jSeparator2 = new javax.swing.JSeparator();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        maryButton = new javax.swing.JToggleButton();
         jSeparator3 = new javax.swing.JSeparator();
-        jToggleButton2 = new javax.swing.JToggleButton();
+        boatButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setMaximumSize(new java.awt.Dimension(500, 500));
-        jPanel1.setMinimumSize(null);
         jPanel1.setPreferredSize(new java.awt.Dimension(378, 312));
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
@@ -58,7 +79,7 @@ public class WelcomeScreen extends javax.swing.JFrame {
         jSeparator4.setPreferredSize(new java.awt.Dimension(5000, 20));
         jPanel1.add(jSeparator4);
 
-        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 0, 10)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
         jLabel3.setText("made by");
         jPanel1.add(jLabel3);
 
@@ -72,29 +93,26 @@ public class WelcomeScreen extends javax.swing.JFrame {
         jSeparator1.setPreferredSize(new java.awt.Dimension(5000, 40));
         jPanel1.add(jSeparator1);
 
-        jToggleButton4.setText("Jingle Bells");
-        jPanel1.add(jToggleButton4);
+        jingleButton.setText("Jingle Bells");
+        jPanel1.add(jingleButton);
 
         jSeparator7.setPreferredSize(new java.awt.Dimension(5000, 0));
         jPanel1.add(jSeparator7);
 
-        buttonGroup1.add(jToggleButton3);
-        jToggleButton3.setText("Happy Birthday");
-        jPanel1.add(jToggleButton3);
+        birthdayButton.setText("Happy Birthday");
+        jPanel1.add(birthdayButton);
 
         jSeparator2.setPreferredSize(new java.awt.Dimension(5000, 0));
         jPanel1.add(jSeparator2);
 
-        buttonGroup1.add(jToggleButton1);
-        jToggleButton1.setText("Mary Had A Little Lamb");
-        jPanel1.add(jToggleButton1);
+        maryButton.setText("Mary Had A Little Lamb");
+        jPanel1.add(maryButton);
 
         jSeparator3.setPreferredSize(new java.awt.Dimension(5000, 0));
         jPanel1.add(jSeparator3);
 
-        buttonGroup1.add(jToggleButton2);
-        jToggleButton2.setText("Row, Row, Row Your Boat");
-        jPanel1.add(jToggleButton2);
+        boatButton.setText("Row, Row, Row Your Boat");
+        jPanel1.add(boatButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -152,7 +170,8 @@ public class WelcomeScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JToggleButton birthdayButton;
+    private javax.swing.JToggleButton boatButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -164,9 +183,7 @@ public class WelcomeScreen extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JToggleButton jingleButton;
+    private javax.swing.JToggleButton maryButton;
     // End of variables declaration//GEN-END:variables
 }
