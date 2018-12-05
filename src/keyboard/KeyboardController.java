@@ -2,21 +2,15 @@ package keyboard;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.awt.event.*;
 
-public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
+
+public class KeyboardController implements MouseListener, ActionListener{
     public static final int DEFAULT_OCTAVE = 4;
     private KeyboardModel keyboard;
     private KeyboardView view;
     private RecordedPlaybackModel recording;
-    private int volume = 64;
-           
+    
     public KeyboardController(KeyboardModel keyboard, KeyboardView view){
         this.keyboard = keyboard;
         this.view = view;
@@ -24,17 +18,17 @@ public class KeyboardController implements MouseListener, ActionListener, Change
     
     public void mousePressed(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource() );
-        keyboard.startNote(DEFAULT_OCTAVE, note, volume);
+        keyboard.startNote(DEFAULT_OCTAVE, note);
         if(view.isRecordEnabled())
-            recording.startNote(DEFAULT_OCTAVE, note, volume);
+            recording.startNote(DEFAULT_OCTAVE, note);
         view.setKeyColor(note, Color.YELLOW);
     }//end of mousePressed
 
     public void mouseReleased(MouseEvent e){
         KeyboardModel.Note note = view.getNote(e.getSource() );
-        keyboard.stopNote(DEFAULT_OCTAVE, note, volume);
+        keyboard.stopNote(DEFAULT_OCTAVE, note);
         if(view.isRecordEnabled())
-            recording.stopNote(DEFAULT_OCTAVE, note, volume);
+            recording.stopNote(DEFAULT_OCTAVE, note);
         switch(note){
             case Csharp:    
             case Dsharp:    
@@ -74,13 +68,8 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         else if(view.isPlay(e.getSource())){
             System.out.println(recording);
         }        
-    }  
-
-    @Override
-    public void stateChanged(ChangeEvent event) {
-        if(event.getSource() instanceof JSlider){
-            JSlider slider = (JSlider) event.getSource();
-            volume = slider.getValue();
+        if(view.isInstrument(e.getSource())){
+            keyboard.setInstrument(view.getSelectedInstrument());
         }
     }
     

@@ -1,15 +1,16 @@
 package keyboard;
 import javax.sound.midi.*;
+import keyboard.KeyboardModel.Instrument;
 
 public class KeyboardModel implements MusicPlayer {
-    private int VELOCITY = 64; //Value to be used for volume.
+    private static final int VELOCITY = 64; //Value to be used for volume.
 
     private static FakeMidiChannel fake;
     private static KeyboardModel keyboard;
 
     Synthesizer synthesizer;
     MidiChannel channel;
-    
+
     public static enum Instrument{
         Piano(1, "Piano"), BrightAcousticPiano(2, "Bright Acoustic Piano"), ElectricGrandPiano(3, "Electic Grand Piano"), HonkyTonk(4, "Honky Tonk"),
         ElectricPiano1(5, "Electric Piano 1"), Harpsichord(7, "Harpsichord"), DrawbarOrgan(17, "Drawbar Organ"), PercussiveOrgan(18, "Percussive Organ"),
@@ -26,9 +27,9 @@ public class KeyboardModel implements MusicPlayer {
         public String toString(){
             return this.name;
         }
-        int getMidiCode(){
+        public int getMidiCode(){
             return midiCode;
-        }
+        }       
     }
 
     public static enum Note{
@@ -52,22 +53,25 @@ public class KeyboardModel implements MusicPlayer {
       synthesizer = MidiSystem.getSynthesizer();
       synthesizer.open();
       channel = synthesizer.getChannels()[Instrument.Piano.getMidiCode()];
+    }    
+    public void setInstrument(Instrument instr){
+        channel = synthesizer.getChannels()[instr.getMidiCode()];
     }
 
     private static void playNote(Note note, int duration) throws Exception {
-        keyboard.startNote(4, note, 64);
+        keyboard.startNote(4, note);
         Thread.sleep(duration);
-        keyboard.stopNote(4, note, 64);
+        keyboard.stopNote(4, note);
     }
 
-    public void startNote(int octave, Note note, int volume){
+    public void startNote(int octave, Note note){
         //Octave number corresponds with classic theory, 1 through 8
         int key = 11 + (octave * 12) + note.getNote();
-        channel.noteOn(key, volume);
+        channel.noteOn(key, VELOCITY);
     }
-    public void stopNote(int octave, Note note, int volume){
+    public void stopNote(int octave, Note note){
         int key = 11 + (octave * 12) + note.getNote();
-        channel.noteOff(key, volume);
+        channel.noteOff(key, VELOCITY);
     }
 
     public static class FakeMidiChannel implements MidiChannel {
@@ -121,7 +125,7 @@ public class KeyboardModel implements MusicPlayer {
     // Debug overloaded methods.
     private static boolean startNoteTest(int oct, Note note, int expectedNote){
         boolean notetestPassed = true;
-        keyboard.startNote(oct, note, 64);
+        keyboard.startNote(oct, note);
         if (!fake.expect(expectedNote, 64, true)){
             System.out.println( note + "" +  oct + " Test failed!" ) ;
             notetestPassed = false;
@@ -130,7 +134,7 @@ public class KeyboardModel implements MusicPlayer {
     }
     private static boolean stopNoteTest(int oct, Note note, int expectedNote){
         boolean noteTestPassed = true;
-        keyboard.stopNote(oct, note, 64);
+        keyboard.stopNote(oct, note);
         if (!fake.expect(expectedNote, 64, false)) {
             System.out.println( note + "" + oct + " Test failed!" );
             noteTestPassed = false;
