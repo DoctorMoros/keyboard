@@ -16,21 +16,15 @@ public class PlaybackModel implements Runnable{
         
         RecordedPlaybackModel.RecordedNote last = recording.getNotes(0);
         keyboard.startNote(last.octave, last.note, 64);
-            System.out.println(last);
         for(int a = 1; a < recording.size(); a++){
             RecordedPlaybackModel.RecordedNote current = recording.getNotes(a);
-            System.out.println(current);
-            long time = current.timestamp - last.timestamp-1;
-            System.out.println("Sleep: " + time);
-            long start = System.currentTimeMillis();
+            long time = current.timestamp - last.timestamp;
             try {
                 Thread.sleep(time);
             } catch(InterruptedException e){
                 keyboard.allNotesOff();
                 return;
             }
-            long end = System.currentTimeMillis();
-            System.out.println("Actually slept: "+(end-start));
             if(current.isStart)
                 keyboard.startNote(last.octave, last.note, 64);
             else
