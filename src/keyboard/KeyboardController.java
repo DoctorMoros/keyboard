@@ -16,8 +16,10 @@ public class KeyboardController implements MouseListener, ActionListener, Change
     private final KeyboardModel keyboard;
     private final KeyboardView view;
     private RecordedPlaybackModel recording;
+    private Thread recordingPlayback = new Thread();
     private int volume = 64;
     private int octave = 4;
+    private boolean isRecording = false;
     
     public KeyboardController(KeyboardModel keyboard, KeyboardView view){
         this.keyboard = keyboard;
@@ -29,8 +31,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         KeyboardModel.Note note = view.getNote(e.getSource());
         view.setKeyColor(note, Color.YELLOW);
         keyboard.startNote(octave, note, volume);
-        if(view.isRecordEnabled())
+        if(isRecording) {
             recording.startNote(octave, note, volume);
+        }
     }
 
     @Override
@@ -55,8 +58,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
                 break;
         }
         keyboard.stopNote(octave, note, volume);
-        if(view.isRecordEnabled())
+        if(isRecording) {
             recording.stopNote(octave, note, volume);
+        }
     }
 
     @Override 
@@ -70,13 +74,20 @@ public class KeyboardController implements MouseListener, ActionListener, Change
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(view.isRecord(e.getSource())){
-            if(view.isRecordEnabled()){
+        if (view.isRecord(e.getSource())) {
+            if (view.isRecordEnabled()) {
+                isRecording = true;
                 recording = new RecordedPlaybackModel();
+            } else {
+                isRecording = false;
             }
-        }
-        else if(view.isPlay(e.getSource())){
-            System.out.println(recording);
+        } else if(view.isPlay(e.getSource())) {
+            if(view.isPlayEnabled()){
+                recordingPlayback = new Thread(new PlaybackModel(keyboard, recording));
+                recordingPlayback.start();
+            } else{
+                recordingPlayback.interrupt(); 
+            }
         }        
         if(view.isInstrument(e.getSource())){
             keyboard.setInstrument(view.getSelectedInstrument());
@@ -100,13 +111,15 @@ public class KeyboardController implements MouseListener, ActionListener, Change
             q = new ArrayDeque<>();
         }
         
-        public void startNote(int octave, Note note){
+        @Override
+        public void startNote(int octave, Note note, int volume){
             Expectation expected = q.poll();
             if(!new Expectation(note, 0, octave, true).equals(expected)){
                 throw new RuntimeException();
             }
         }
-        public void stopNote(int octave, Note note){
+        @Override
+        public void stopNote(int octave, Note note, int volume){
             Expectation expected = q.poll();
             if(!new Expectation(note, 0, octave, false).equals(expected)){
                 throw new RuntimeException();
@@ -114,6 +127,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         }
         public void expect(Note note, long timestamp, int octave, boolean noteOn) {
             q.add(new Expectation(note, timestamp, octave, noteOn));
+        }
+        public boolean allExpectationsMet() {
+            return q.isEmpty();
         }
         public class Expectation {
             private final int octave;
@@ -185,7 +201,10 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         controller.mouseReleased(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
         System.out.println(view.expect(KeyboardModel.Note.Fsharp, Color.BLACK));
         System.out.println(view.expect(c));
-
-    }//end of main
-    
-}//end of class KeyboardController
+        if(!model.allExpectationsMet()) {
+            System.out.println("TEST FAILED: Not all expected model calls occurred.");
+        } else {
+            System.out.println("All expected model calls occurred.");
+        }
+    }
+}
