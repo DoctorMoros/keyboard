@@ -21,12 +21,13 @@ public class Keyboard {
             java.util.logging.Logger.getLogger(KeyboardView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        KeyboardView view = new KeyboardView();
-        KeyboardModel model = null;
-
+        KeyboardView keyboardView = new KeyboardView();
+        KeyboardModel keyboardModel = null;
+        WelcomeScreen welcomeView = new WelcomeScreen();
+        
         try
         {
-            model = new KeyboardModel();
+            keyboardModel = new KeyboardModel();
         }
         catch (MidiUnavailableException ex)
         {
@@ -34,14 +35,18 @@ public class Keyboard {
             Logger.getLogger(Keyboard.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
-        KeyboardController controller = new KeyboardController(model, view);
-        view.addMouseListener(controller);
-        view.addActionListener(controller);
-        view.addChangeListener(controller);
-
+        KeyboardController controller = new KeyboardController(keyboardModel, keyboardView);
+        keyboardView.addMouseListener(controller);
+        keyboardView.addActionListener(controller);
+        keyboardView.addChangeListener(controller);
+        
+        WelcomeController welcomeController = new WelcomeController(keyboardModel, keyboardView, welcomeView);
+        welcomeView.addActionListener(welcomeController);
+        welcomeView.addWindowListener(welcomeController);
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable(){
-            public void run() { view.setVisible(true); }
+            public void run() { welcomeView.setVisible(true); }
         });
     }
 }
