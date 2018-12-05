@@ -1,23 +1,29 @@
-package Keyboard;
-
 /*
  * JFrame for main keyboard component
- * 
+ *
+ * @authors Yorick, Glen, Martin
  */
+package keyboard;
 
-import Keyboard.KeyboardModel;
-import javax.swing.JFrame;
+import javax.swing.DefaultComboBoxModel;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import javax.swing.event.ChangeListener;
 
 public class KeyboardView extends javax.swing.JFrame {
+
     /**
      * Creates new form keyboard
      */
+    @SuppressWarnings("unchecked")
     public KeyboardView() {
         initComponents();
+        instrumentComboBox.setModel(new DefaultComboBoxModel(KeyboardModel.Instrument.values()));
+        pack();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,6 +49,12 @@ public class KeyboardView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         recordButton = new javax.swing.JToggleButton();
         playButton = new javax.swing.JToggleButton();
+        jSlider1 = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        octaveComboBox = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        instrumentComboBox = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -90,20 +102,32 @@ public class KeyboardView extends javax.swing.JFrame {
         playButton.setRolloverEnabled(false);
         playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/playbuttonRS2.png"))); // NOI18N
 
+        jSlider1.setMajorTickSpacing(25);
+        jSlider1.setMinorTickSpacing(5);
+        jSlider1.setPaintTicks(true);
+        jSlider1.setToolTipText("Use to adjust output volume.");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("Volume");
+
+        octaveComboBox.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        octaveComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "4", "5", "6", "7", "8", "9" }));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel2.setText("Octave");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel4.setText("Instrument");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(imgTreble)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGap(87, 87, 87)
+                            .addGap(97, 97, 97)
                             .addComponent(cSharp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(39, 39, 39)
                             .addComponent(dSharp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -115,11 +139,30 @@ public class KeyboardView extends javax.swing.JFrame {
                             .addComponent(aSharp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(65, 65, 65))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(20, 20, 20)
+                            .addGap(30, 30, 30)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(layout.createSequentialGroup()
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(recordButton)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(jLabel1)
+                                                .addGap(133, 133, 133))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(jLabel2)
+                                                .addGap(132, 132, 132))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(octaveComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jLabel4)
+                                            .addGap(111, 111, 111)))
                                     .addComponent(playButton))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(c, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -134,7 +177,12 @@ public class KeyboardView extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(a, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(b, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(b, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(imgTreble)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 501, Short.MAX_VALUE)
+                        .addComponent(jLabel3)))
                 .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
@@ -161,17 +209,27 @@ public class KeyboardView extends javax.swing.JFrame {
                             .addComponent(c, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(b, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(recordButton)
-                    .addComponent(playButton))
-                .addGap(30, 30, 30))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(playButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(octaveComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4))
+                    .addComponent(recordButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas a;
     private java.awt.Canvas aSharp;
@@ -186,13 +244,22 @@ public class KeyboardView extends javax.swing.JFrame {
     private java.awt.Canvas g;
     private java.awt.Canvas gSharp;
     private javax.swing.JLabel imgTreble;
+    private javax.swing.JComboBox<String> instrumentComboBox;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JSlider jSlider1;
+    private javax.swing.JComboBox<String> octaveComboBox;
     private javax.swing.JToggleButton playButton;
     private javax.swing.JToggleButton recordButton;
     // End of variables declaration//GEN-END:variables
-    
+    static final int VOLUME_MIN = 0;
+    static final int VOLUME_MAX = 128;
+    static final int VOLUME_INIT = 64;
+
     @Override
-    public void addMouseListener(MouseListener listen){
+    public void addMouseListener(MouseListener listen) {
         c.addMouseListener(listen);
         cSharp.addMouseListener(listen);
         d.addMouseListener(listen);
@@ -206,11 +273,54 @@ public class KeyboardView extends javax.swing.JFrame {
         aSharp.addMouseListener(listen);
         b.addMouseListener(listen);
     }
-       
+
+    public void addActionListener(ActionListener listen) {
+        recordButton.addActionListener(listen);
+        playButton.addActionListener(listen);
+        octaveComboBox.addActionListener(listen);
+        instrumentComboBox.addActionListener(listen);
+    }
+
+    public void addChangeListener(ChangeListener listen) {
+        jSlider1.addChangeListener(listen);
+    }
+
+    public boolean isPlay(Object source) {
+        return source == playButton;
+    }
+
+    public boolean isRecord(Object source) {
+        return source == recordButton;
+    }
+
+    public boolean isOctave(Object source) {
+        return source == octaveComboBox;
+    }
+
+    public boolean isInstrument(Object source) {
+        return source == instrumentComboBox;
+    }
+
+    public boolean isRecordEnabled() {
+        return recordButton.isSelected();
+    }
+
+    public boolean isPlayEnabled() {
+        return playButton.isSelected();
+    }
+
+    public KeyboardModel.Instrument getSelectedInstrument() {
+        return (KeyboardModel.Instrument) instrumentComboBox.getSelectedItem();
+    }
+
+    public int getSelectedOctave() {
+        return Integer.parseInt((String) octaveComboBox.getSelectedItem());
+    }
+
     //set key color when pressed
-    public void setKeyColor(KeyboardModel.Note note, Color color){
+    public void setKeyColor(KeyboardModel.Note note, Color color) {
         Canvas canvas = null;
-        switch(note){
+        switch (note) {
             case C:
                 canvas = c;
                 break;
@@ -247,11 +357,11 @@ public class KeyboardView extends javax.swing.JFrame {
             case B:
                 canvas = b;
                 break;
-        } 
+        }
         canvas.setBackground(color);
     }
-    
-    public KeyboardModel.Note getNote(Object source){
+
+    public KeyboardModel.Note getNote(Object source) {
         if (source == a) {
             return KeyboardModel.Note.A;
         }
@@ -290,7 +400,8 @@ public class KeyboardView extends javax.swing.JFrame {
         }
         return null;
     }
-    private boolean getNoteTest(){
+
+    private boolean getNoteTest() {
         boolean testPassed;
         testPassed = getNote(c) == KeyboardModel.Note.C;
         testPassed &= getNote(cSharp) == KeyboardModel.Note.Csharp;
@@ -306,13 +417,12 @@ public class KeyboardView extends javax.swing.JFrame {
         testPassed &= getNote(b) == KeyboardModel.Note.B;
         return testPassed;
     }
-    
+
     public static void main(String args[]) {
         KeyboardView view = new KeyboardView();
-        if(view.getNoteTest()) {
+        if (view.getNoteTest()) {
             System.out.println("View test passed.");
-        }
-        else {
+        } else {
             System.out.println("getNote test failed");
         }
     }

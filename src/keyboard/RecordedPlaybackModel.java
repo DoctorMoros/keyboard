@@ -1,40 +1,23 @@
-package Keyboard;
-
-/**
- * if recording: then store played note, time difference from mouse e
- * if play: then read note, duration of each key press from ArrayList and startNote then endNote to play
- **/
+package keyboard;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import static Keyboard.RecordedPlaybackModel.melody;
 
+public class RecordedPlaybackModel implements MusicPlayer {
+    private Clock clock;
+    private ArrayList<RecordedNote> melody = new ArrayList<RecordedNote>();
+    private long startTime = 0;
 
-//class
-public class RecordedPlaybackModel implements Instrument{
-    
-    private static FakeClock clock;
-    public static ArrayList melody = new ArrayList();
-    
     public static class FakeClock extends Clock{
-    private long time = 0;
-    private final Instant WHEN_STARTED;
-    private final ZoneId DEFAULT_TZONE = ZoneId.systemDefault();
-  
-        //DEFAULT CONSTRUCTOR
-        public FakeClock(){ 
-            WHEN_STARTED = Instant.parse("2018-12-03T00:00:00.00Z");
-        }    
-        
-        
-        /** ACCESSORS **/
-        public FakeClock getClock(){
-            return clock;
+        private Instant currentTime;
+        private final ZoneId DEFAULT_TZONE = ZoneId.systemDefault();
+
+        public FakeClock(){
+            currentTime = Instant.parse("2018-12-03T00:00:00.00Z");
         }
-        
-        /** OVERRIDDEN METHODS **/
+
         @Override
         public ZoneId getZone(){
             return DEFAULT_TZONE;
@@ -42,107 +25,125 @@ public class RecordedPlaybackModel implements Instrument{
 
         @Override
         public Clock withZone(ZoneId zone){
-            return Clock.fixed(WHEN_STARTED, zone);
+            return Clock.fixed(currentTime, zone);
         }
 
         @Override
         public Instant instant(){
-            return nextInstant();
-        }
-        
-        private Instant nextInstant(){
-            return WHEN_STARTED.plusMillis(0);
+            return currentTime;
         }
 
-        
-    //END
-    }//END OF CLASS FAKECLOCK
-    
-    
-    
+        private void advanceTime(){
+            currentTime = currentTime.plusMillis(1000);
+        }
+    }
+
     public static class RecordedNote {
         KeyboardModel.Note note;
         long timestamp;
         int octave;
         boolean isStart;
-        
-        //initialzation constructor
+
         public RecordedNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
             this.note = note;
             this.timestamp = timestamp;
             this.octave = octave;
             this.isStart = isStart;
         }
-        
+
+        public String toString(){
+            return "RecordedNote{note="+this.note+", timestamp="+this.timestamp+", octave="+this.octave+", isStart="+this.isStart+"}";
+        }
+
         public boolean equals(RecordedNote other){
+            if (other == null) return false;
             return this.note == other.note && this.timestamp == other.timestamp && this.octave == other.octave && this.isStart == other.isStart;
-        }//end of equals
-        
-    }//END OF CLASS RECORDEDNOTE
-    
-    
-    // Default constructor
+        }
+    }
+
     public RecordedPlaybackModel() {
-        this.clock = clock.getClock();
+        this.clock = Clock.systemDefaultZone();
     }
-    
-    
-    private RecordedNote getNotes(int index) {
-        //returns object at given index  
-        RecordedNote recNote = (RecordedNote) RecordedPlaybackModel.melody.get(index);
-        return recNote;
-    }
-    
-    public void startNote(int octave, KeyboardModel.Note note){
-        //long now = this.clock.Millis(0);
-        
-    }
-    
-    public void stopNote(int octave, KeyboardModel.Note note){
-        
-    }
-    
-    
+
     // Tests constructor used for injecting a clock.
     protected RecordedPlaybackModel(FakeClock clock){
         this.clock = clock;
     }
-    
-    
+
+    private RecordedNote getNotes(int index) {
+        if(index >= melody.size()){
+            return null;
+        }
+        return melody.get(index);
+    }
+
+    public String toString(){
+        String text = "{";
+        for(Object a: melody){
+            text += a.toString();
+        }
+        return text + "}";
+    }
+
+    public void startNote(int octave, KeyboardModel.Note note, int volume){
+        if(startTime == 0)
+            startTime = this.clock.millis();
+        melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, true));
+    }
+
+    public void stopNote(int octave, KeyboardModel.Note note, int volume){
+        if(startTime == 0)
+            startTime = this.clock.millis();
+        melody.add(new RecordedNote(note, this.clock.millis() - startTime, octave, false));
+    }
+
+    public void addNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
+        RecordedNote testNote = new RecordedNote(note, timestamp, octave, isStart);
+        melody.add(testNote);
+    }
+
     public static void main(String[] args) {
-        //Test FakeClock class
-        FakeClock test = new FakeClock();
-        
+        FakeClock clock = new FakeClock();
+
         final boolean START_NOTE = true;
         final boolean STOP_NOTE = false;
         final int DEFAULT_OCTAVE = 4;
-        
-        
-        // create a fake clock that extends Clock and pass it in here to control the time
-        RecordedPlaybackModel recording = new RecordedPlaybackModel(null); 
-        
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.E);
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.C);
-        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
-        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp);
-         
-       //confirm that the notes were recorded
-        if (!recording.getNotes(0).equals(new RecordedNote(KeyboardModel.Note.E, 0l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(1).equals(new RecordedNote(KeyboardModel.Note.E, 1000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(2).equals(new RecordedNote(KeyboardModel.Note.C, 2000l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(3).equals(new RecordedNote(KeyboardModel.Note.C, 3000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(4).equals(new RecordedNote(KeyboardModel.Note.Asharp, 4000l, DEFAULT_OCTAVE, START_NOTE))) System.out.println("PASS");
-        if (!recording.getNotes(5).equals(new RecordedNote(KeyboardModel.Note.Asharp, 5000l, DEFAULT_OCTAVE, STOP_NOTE))) System.out.println("PASS");
-        //access first string in array with toString(of a RecordedNote Object with attributes :note object, time difference key duration, octave, ) 
-        
-    }//end of main
-    
-    
-        
-    //test
-    //logic
 
-}//end of class RecordedPlaybackModel
+        RecordedPlaybackModel recording = new RecordedPlaybackModel(clock);
 
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.E, 64);
+        clock.advanceTime();
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.E, 64);
+        clock.advanceTime();
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.C, 64);
+        clock.advanceTime();
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.C, 64);
+        clock.advanceTime();
+        recording.startNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp, 64);
+        clock.advanceTime();
+        recording.stopNote(DEFAULT_OCTAVE, KeyboardModel.Note.Asharp, 64);
+
+       //confirm that the notes were recorded.
+       boolean testsPass = true;
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 0l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(0));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.E, 1000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(1));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.C, 2000l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(2));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.C, 3000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(3));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.Asharp, 4000l, DEFAULT_OCTAVE, START_NOTE), recording.getNotes(4));
+       testsPass &= matches(new RecordedNote(KeyboardModel.Note.Asharp, 5000l, DEFAULT_OCTAVE, STOP_NOTE), recording.getNotes(5));
+
+       if (testsPass) {
+           System.out.println("ALL TESTS PASS!!!");
+       }
+    }
+
+    private static boolean matches(RecordedNote expected, RecordedNote actual) {
+        boolean result = expected.equals(actual);
+        if (!result) {
+            System.out.println("Test failed: these do not match:");
+            System.out.println("Expected: " + expected);
+            System.out.println("Actual: " + actual);
+        }
+        return result;
+    }
+}

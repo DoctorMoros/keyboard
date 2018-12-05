@@ -1,33 +1,41 @@
-package Keyboard;
+package keyboard;
 
-import Keyboard.KeyboardModel;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayDeque;
 
-
-public class KeyboardController implements MouseListener{
-    public static final int DEFAULT_OCTAVE = 4;
-    private KeyboardModel model;
-    private KeyboardView view;
-
-    //Constructor for tests
-    public KeyboardController(KeyboardModel model, KeyboardView view){
-        this.model = model;
+public class KeyboardController implements MouseListener, ActionListener, ChangeListener{
+    private final KeyboardModel keyboard;
+    private final KeyboardView view;
+    private RecordedPlaybackModel recording;
+    private int volume = 64;
+    private int octave = 3;
+    
+    public KeyboardController(KeyboardModel keyboard, KeyboardView view){
+        this.keyboard = keyboard;
         this.view = view;
     }
     
+    @Override
     public void mousePressed(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource() );
-        model.startNote(DEFAULT_OCTAVE, note);
+        KeyboardModel.Note note = view.getNote(e.getSource());
         view.setKeyColor(note, Color.YELLOW);
-    }//end of mousePressed
+        keyboard.startNote(octave, note, volume);
+        if(view.isRecordEnabled())
+            recording.startNote(octave, note, volume);
+    }
 
+    @Override
     public void mouseReleased(MouseEvent e){
-        KeyboardModel.Note note = view.getNote(e.getSource() );
-        model.stopNote(DEFAULT_OCTAVE, note);
+        KeyboardModel.Note note = view.getNote(e.getSource());
         switch(note){
             case Csharp:    
             case Dsharp:    
@@ -46,10 +54,11 @@ public class KeyboardController implements MouseListener{
                 view.setKeyColor(note, Color.WHITE);
                 break;
         }
-    }//end of mousereleased
+        keyboard.stopNote(octave, note, volume);
+        if(view.isRecordEnabled())
+            recording.stopNote(octave, note, volume);
+    }
 
-    
-    
     @Override 
     public void mouseClicked(MouseEvent e) {}
 
@@ -58,11 +67,37 @@ public class KeyboardController implements MouseListener{
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(view.isRecord(e.getSource())){
+            if(view.isRecordEnabled()){
+                recording = new RecordedPlaybackModel();
+            }
+        }
+        else if(view.isPlay(e.getSource())){
+            System.out.println(recording);
+        }        
+        if(view.isInstrument(e.getSource())){
+            keyboard.setInstrument(view.getSelectedInstrument());
+        }
+        if(view.isOctave(e.getSource())){
+            octave = view.getSelectedOctave();
+        }
+    }
+    
+    @Override
+    public void stateChanged(ChangeEvent event){
+        if (event.getSource() instanceof javax.swing.JSlider) {
+            volume = ((JSlider)event.getSource()).getValue();
+        }
+    }
     
     public static class FakeKeyboardModel extends KeyboardModel{
-        private ArrayDeque<Expectation> q = new ArrayDeque<>();
+        private final ArrayDeque<Expectation> q;
         public FakeKeyboardModel(){
-            super(new KeyboardModel.FakeMidiChannel() );
+            super(new KeyboardModel.FakeMidiChannel());
+            q = new ArrayDeque<>();
         }
         
         public void startNote(int octave, Note note){
@@ -91,7 +126,6 @@ public class KeyboardController implements MouseListener{
                 this.octave = octave;
                 this.noteOn = noteOn;
             }
-            
             public boolean equals(Expectation other){
                 return this.octave == other.octave || this.note == other.note || this.noteOn == other.noteOn  || this.timestamp == other.timestamp;
             }
@@ -102,10 +136,12 @@ public class KeyboardController implements MouseListener{
         private KeyboardModel.Note note, expectedNote;
         private Color color;
         private Object source;
+        @Override
         public void setKeyColor(KeyboardModel.Note note, Color color){
             this.note = note;
             this.color = color;
         }
+        @Override
         public KeyboardModel.Note getNote(Object source){
             this.source = source;
             return expectedNote;
@@ -134,20 +170,20 @@ public class KeyboardController implements MouseListener{
         // C Key is pressed.
         view.setExpectedNote(KeyboardModel.Note.C);
         controller.mousePressed(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println("Correct key was pressed: " + view.expect(KeyboardModel.Note.C, Color.YELLOW));
-        System.out.println("Key color is correct: " + view.expect(c));
+        System.out.println(view.expect(KeyboardModel.Note.C, Color.YELLOW));
+        System.out.println(view.expect(c));
         
         // C Key is released.
         view.setExpectedNote(KeyboardModel.Note.C);
         controller.mouseReleased(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println("Correct key was pressed: " + view.expect(KeyboardModel.Note.C, Color.WHITE));
-        System.out.println("Key color is correct: " + view.expect(c));
+        System.out.println(view.expect(KeyboardModel.Note.C, Color.WHITE));
+        System.out.println(view.expect(c));
         
         // F-sharp is released.
         view.setExpectedNote(KeyboardModel.Note.Fsharp);
         controller.mouseReleased(new MouseEvent(c, 0, 0, 0, 0, 0, 1, false));
-        System.out.println("Correct key was pressed: " + view.expect(KeyboardModel.Note.Fsharp, Color.BLACK));
-        System.out.println("Key color is correct: " + view.expect(c));
+        System.out.println(view.expect(KeyboardModel.Note.Fsharp, Color.BLACK));
+        System.out.println(view.expect(c));
 
     }//end of main
     
