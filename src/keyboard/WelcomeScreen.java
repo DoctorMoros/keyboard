@@ -22,15 +22,11 @@ public class WelcomeScreen extends javax.swing.JFrame {
     }
 
     public void addActionListener(ActionListener listen){
-        jingleButton.addActionListener(listen);
         birthdayButton.addActionListener(listen);
         maryButton.addActionListener(listen);
         boatButton.addActionListener(listen);
     }
     
-    public boolean isJingle(Object source){
-        return source == jingleButton;
-    }
     public boolean isMary(Object source){
         return source == maryButton;
     }
@@ -58,8 +54,6 @@ public class WelcomeScreen extends javax.swing.JFrame {
         jSeparator6 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jingleButton = new javax.swing.JToggleButton();
-        jSeparator7 = new javax.swing.JSeparator();
         birthdayButton = new javax.swing.JToggleButton();
         jSeparator2 = new javax.swing.JSeparator();
         maryButton = new javax.swing.JToggleButton();
@@ -72,32 +66,24 @@ public class WelcomeScreen extends javax.swing.JFrame {
         jPanel1.setMaximumSize(new java.awt.Dimension(500, 500));
         jPanel1.setPreferredSize(new java.awt.Dimension(378, 312));
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Keyboard");
         jPanel1.add(jLabel1);
 
         jSeparator4.setPreferredSize(new java.awt.Dimension(5000, 20));
         jPanel1.add(jSeparator4);
 
-        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
         jLabel3.setText("made by");
         jPanel1.add(jLabel3);
 
         jSeparator6.setPreferredSize(new java.awt.Dimension(5000, 0));
         jPanel1.add(jSeparator6);
 
-        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jLabel4.setText("Glenn Williams, Martin Le and Yorick van de Water");
+        jLabel4.setText("Glenn Williams, Martin Le, Yorick van de Water");
         jPanel1.add(jLabel4);
 
         jSeparator1.setPreferredSize(new java.awt.Dimension(5000, 40));
         jPanel1.add(jSeparator1);
-
-        jingleButton.setText("Jingle Bells");
-        jPanel1.add(jingleButton);
-
-        jSeparator7.setPreferredSize(new java.awt.Dimension(5000, 0));
-        jPanel1.add(jSeparator7);
 
         birthdayButton.setText("Happy Birthday");
         jPanel1.add(birthdayButton);
@@ -118,16 +104,16 @@ public class WelcomeScreen extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(25, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE))
         );
 
         pack();
@@ -181,8 +167,6 @@ public class WelcomeScreen extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator7;
-    private javax.swing.JToggleButton jingleButton;
     private javax.swing.JToggleButton maryButton;
     // End of variables declaration//GEN-END:variables
 }
