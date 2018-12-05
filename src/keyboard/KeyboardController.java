@@ -113,20 +113,22 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         
         @Override
         public void startNote(int octave, Note note, int volume){
+            Expectation actual = new Expectation(note, octave, true);
             Expectation expected = q.poll();
-            if(!new Expectation(note, 0, octave, true).equals(expected)){
-                throw new RuntimeException();
+            if(!actual.equals(expected)){
+                throw new RuntimeException("Actual does not match expected: " + expected +", actual: " + actual);
             }
         }
         @Override
         public void stopNote(int octave, Note note, int volume){
+            Expectation actual = new Expectation(note, octave, false);
             Expectation expected = q.poll();
-            if(!new Expectation(note, 0, octave, false).equals(expected)){
-                throw new RuntimeException();
+            if(!actual.equals(expected)){
+                throw new RuntimeException("Actual does not match expected: " + expected +", actual: " + actual);
             }
         }
-        public void expect(Note note, long timestamp, int octave, boolean noteOn) {
-            q.add(new Expectation(note, timestamp, octave, noteOn));
+        public void expect(Note note, int octave, boolean noteOn) {
+            q.add(new Expectation(note, octave, noteOn));
         }
         public boolean allExpectationsMet() {
             return q.isEmpty();
@@ -135,15 +137,20 @@ public class KeyboardController implements MouseListener, ActionListener, Change
             private final int octave;
             private final KeyboardModel.Note note;
             private final boolean noteOn;
-            private final long timestamp;
-            public Expectation(KeyboardModel.Note note, long timestamp ,int octave, boolean noteOn) {
+            public Expectation(KeyboardModel.Note note, int octave, boolean noteOn) {
                 this.note = note;
-                this.timestamp = timestamp;
                 this.octave = octave;
                 this.noteOn = noteOn;
             }
-            public boolean equals(Expectation other){
-                return this.octave == other.octave || this.note == other.note || this.noteOn == other.noteOn  || this.timestamp == other.timestamp;
+            @Override
+            public boolean equals(Object other){
+                if (!(other instanceof Expectation)) return false;
+                Expectation e = (Expectation)other;
+                return this.octave == e.octave && this.note == e.note && this.noteOn == e.noteOn;
+            }
+            @Override
+            public String toString(){
+                return "Expectation{note="+note+",,octave="+octave+",noteOn="+noteOn;
             }
         }
     }
@@ -180,9 +187,9 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         Component c = new Button();
         
         // Expect the notes to be called in order on the keyboard.
-        model.expect(KeyboardModel.Note.C, 0, 4, true);
-        model.expect(KeyboardModel.Note.C, 0, 4, false);
-        model.expect(KeyboardModel.Note.Fsharp, 0, 4, false);
+        model.expect(KeyboardModel.Note.C, 4, true);
+        model.expect(KeyboardModel.Note.C, 4, false);
+        model.expect(KeyboardModel.Note.Fsharp, 4, false);
         
         // C Key is pressed.
         view.setExpectedNote(KeyboardModel.Note.C);
