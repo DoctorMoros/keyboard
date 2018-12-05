@@ -71,6 +71,10 @@ public class KeyboardModel implements MusicPlayer {
         int key = 11 + (octave * 12) + note.getNote();
         channel.noteOff(key, volume);
     }
+    
+    public void allNotesOff() {
+        channel.allNotesOff();
+    }
 
     public static class FakeMidiChannel implements MidiChannel {
         private int key, vel;
