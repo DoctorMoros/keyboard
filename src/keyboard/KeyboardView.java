@@ -93,13 +93,11 @@ public class KeyboardView extends javax.swing.JFrame {
 
         recordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/recordbuttonRS1.png"))); // NOI18N
         recordButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/recordbuttonRS.png"))); // NOI18N
-        recordButton.setRolloverEnabled(false);
         recordButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/recordbuttonRS.png"))); // NOI18N
 
         playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/playbuttonRS1.png"))); // NOI18N
         playButton.setFocusPainted(false);
         playButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/playbuttonRS2.png"))); // NOI18N
-        playButton.setRolloverEnabled(false);
         playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/keyboard/playbuttonRS2.png"))); // NOI18N
 
         jSlider1.setMajorTickSpacing(25);
@@ -111,7 +109,9 @@ public class KeyboardView extends javax.swing.JFrame {
         jLabel1.setText("Volume");
 
         octaveComboBox.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        octaveComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "4", "5", "6", "7", "8", "9" }));
+        octaveComboBox.setMaximumRowCount(7);
+        octaveComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7" }));
+        octaveComboBox.setSelectedIndex(3);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Octave");

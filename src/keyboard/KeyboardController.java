@@ -17,7 +17,7 @@ public class KeyboardController implements MouseListener, ActionListener, Change
     private final KeyboardView view;
     private RecordedPlaybackModel recording;
     private int volume = 64;
-    private int octave = 3;
+    private int octave = 4;
     
     public KeyboardController(KeyboardModel keyboard, KeyboardView view){
         this.keyboard = keyboard;
