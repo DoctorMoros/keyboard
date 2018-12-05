@@ -38,11 +38,11 @@ public class RecordedPlaybackModel implements MusicPlayer {
         }
     }
 
-    public static class RecordedNote {
-        KeyboardModel.Note note;
-        long timestamp;
-        int octave;
-        boolean isStart;
+    public static final class RecordedNote {
+        public final KeyboardModel.Note note;
+        public final long timestamp;
+        public final int octave;
+        public final boolean isStart;
 
         public RecordedNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
             this.note = note;
@@ -51,6 +51,7 @@ public class RecordedPlaybackModel implements MusicPlayer {
             this.isStart = isStart;
         }
 
+        @Override
         public String toString(){
             return "RecordedNote{note="+this.note+", timestamp="+this.timestamp+", octave="+this.octave+", isStart="+this.isStart+"}";
         }
@@ -70,13 +71,17 @@ public class RecordedPlaybackModel implements MusicPlayer {
         this.clock = clock;
     }
 
-    private RecordedNote getNotes(int index) {
+    public RecordedNote getNotes(int index) {
         if(index >= melody.size()){
             return null;
         }
         return melody.get(index);
     }
-
+    
+    public int size(){
+        return melody.size();
+    }
+    
     public String toString(){
         String text = "{";
         for(Object a: melody){
@@ -98,8 +103,7 @@ public class RecordedPlaybackModel implements MusicPlayer {
     }
 
     public void addNote(KeyboardModel.Note note, long timestamp, int octave, boolean isStart){
-        RecordedNote testNote = new RecordedNote(note, timestamp, octave, isStart);
-        melody.add(testNote);
+        melody.add(new RecordedNote(note, timestamp, octave, isStart));
     }
 
     public static void main(String[] args) {
