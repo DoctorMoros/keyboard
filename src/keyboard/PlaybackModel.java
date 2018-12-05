@@ -23,7 +23,12 @@ public class PlaybackModel implements Runnable{
             long time = current.timestamp - last.timestamp-1;
             System.out.println("Sleep: " + time);
             long start = System.currentTimeMillis();
-            try{Thread.sleep(time);} catch(InterruptedException e){}
+            try {
+                Thread.sleep(time);
+            } catch(InterruptedException e){
+                keyboard.allNotesOff();
+                return;
+            }
             long end = System.currentTimeMillis();
             System.out.println("Actually slept: "+(end-start));
             if(current.isStart)
