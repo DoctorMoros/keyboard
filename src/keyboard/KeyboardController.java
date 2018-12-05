@@ -163,6 +163,7 @@ public class KeyboardController implements MouseListener, ActionListener, Change
         KeyboardController controller = new KeyboardController(model, view);
         Component c = new Button();
         
+        // Expect the notes to be called in order on the keyboard.
         model.expect(KeyboardModel.Note.C, 0, 4, true);
         model.expect(KeyboardModel.Note.C, 0, 4, false);
         model.expect(KeyboardModel.Note.Fsharp, 0, 4, false);
