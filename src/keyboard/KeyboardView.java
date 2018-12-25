@@ -1,8 +1,3 @@
-/*
- * JFrame for main keyboard component
- *
- * @authors Yorick, Glen, Martin
- */
 package keyboard;
 
 import javax.swing.DefaultComboBoxModel;
@@ -14,14 +9,10 @@ import java.awt.event.MouseListener;
 import javax.swing.event.ChangeListener;
 
 public class KeyboardView extends javax.swing.JFrame {
-
-    /**
-     * Creates new form keyboard
-     */
     @SuppressWarnings("unchecked")
     public KeyboardView() {
         initComponents();
-        instrumentComboBox.setModel(new DefaultComboBoxModel(KeyboardModel.Instrument.values()));
+        instrumentComboBox.setModel(new DefaultComboBoxModel(Instrument.values()));
         pack();
     }
 
@@ -196,13 +187,15 @@ public class KeyboardView extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,11 +213,6 @@ public class KeyboardView extends javax.swing.JFrame {
         octaveComboBox.setMaximumRowCount(7);
         octaveComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7" }));
         octaveComboBox.setSelectedIndex(3);
-        octaveComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                octaveComboBoxActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -281,17 +269,11 @@ public class KeyboardView extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,11 +320,8 @@ public class KeyboardView extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -359,10 +338,6 @@ public class KeyboardView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void octaveComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_octaveComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_octaveComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Canvas a;
@@ -425,7 +400,7 @@ public class KeyboardView extends javax.swing.JFrame {
     public void addChangeListener(ChangeListener listen) {
         jSlider1.addChangeListener(listen);
     }
-    
+
     @Override
     public void addKeyListener(KeyListener listen){
         super.addKeyListener(listen);
@@ -484,8 +459,8 @@ public class KeyboardView extends javax.swing.JFrame {
         return playButton.isSelected();
     }
 
-    public KeyboardModel.Instrument getSelectedInstrument() {
-        return (KeyboardModel.Instrument) instrumentComboBox.getSelectedItem();
+    public Instrument getSelectedInstrument() {
+        return (Instrument) instrumentComboBox.getSelectedItem();
     }
 
     public int getSelectedOctave() {
@@ -493,7 +468,7 @@ public class KeyboardView extends javax.swing.JFrame {
     }
 
     //set key color when pressed
-    public void setKeyColor(KeyboardModel.Note note, Color color) {
+    public void setKeyColor(Note note, Color color) {
         Canvas canvas = null;
         switch (note) {
             case C:
@@ -536,60 +511,60 @@ public class KeyboardView extends javax.swing.JFrame {
         canvas.setBackground(color);
     }
 
-    public KeyboardModel.Note getNote(Object source) {
+    public Note getNote(Object source) {
         if (source == a) {
-            return KeyboardModel.Note.A;
+            return Note.A;
         }
         if (source == b) {
-            return KeyboardModel.Note.B;
+            return Note.B;
         }
         if (source == c) {
-            return KeyboardModel.Note.C;
+            return Note.C;
         }
         if (source == d) {
-            return KeyboardModel.Note.D;
+            return Note.D;
         }
         if (source == e) {
-            return KeyboardModel.Note.E;
+            return Note.E;
         }
         if (source == f) {
-            return KeyboardModel.Note.F;
+            return Note.F;
         }
         if (source == g) {
-            return KeyboardModel.Note.G;
+            return Note.G;
         }
         if (source == aSharp) {
-            return KeyboardModel.Note.Asharp;
+            return Note.Asharp;
         }
         if (source == cSharp) {
-            return KeyboardModel.Note.Csharp;
+            return Note.Csharp;
         }
         if (source == dSharp) {
-            return KeyboardModel.Note.Dsharp;
+            return Note.Dsharp;
         }
         if (source == fSharp) {
-            return KeyboardModel.Note.Fsharp;
+            return Note.Fsharp;
         }
         if (source == gSharp) {
-            return KeyboardModel.Note.Gsharp;
+            return Note.Gsharp;
         }
         return null;
     }
 
     private boolean getNoteTest() {
         boolean testPassed;
-        testPassed = getNote(c) == KeyboardModel.Note.C;
-        testPassed &= getNote(cSharp) == KeyboardModel.Note.Csharp;
-        testPassed &= getNote(d) == KeyboardModel.Note.D;
-        testPassed &= getNote(dSharp) == KeyboardModel.Note.Dsharp;
-        testPassed &= getNote(e) == KeyboardModel.Note.E;
-        testPassed &= getNote(f) == KeyboardModel.Note.F;
-        testPassed &= getNote(fSharp) == KeyboardModel.Note.Fsharp;
-        testPassed &= getNote(g) == KeyboardModel.Note.G;
-        testPassed &= getNote(gSharp) == KeyboardModel.Note.Gsharp;
-        testPassed &= getNote(a) == KeyboardModel.Note.A;
-        testPassed &= getNote(aSharp) == KeyboardModel.Note.Asharp;
-        testPassed &= getNote(b) == KeyboardModel.Note.B;
+        testPassed = getNote(c) == Note.C;
+        testPassed &= getNote(cSharp) == Note.Csharp;
+        testPassed &= getNote(d) == Note.D;
+        testPassed &= getNote(dSharp) == Note.Dsharp;
+        testPassed &= getNote(e) == Note.E;
+        testPassed &= getNote(f) == Note.F;
+        testPassed &= getNote(fSharp) == Note.Fsharp;
+        testPassed &= getNote(g) == Note.G;
+        testPassed &= getNote(gSharp) == Note.Gsharp;
+        testPassed &= getNote(a) == Note.A;
+        testPassed &= getNote(aSharp) == Note.Asharp;
+        testPassed &= getNote(b) == Note.B;
         return testPassed;
     }
 

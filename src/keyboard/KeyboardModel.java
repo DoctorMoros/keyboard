@@ -3,56 +3,24 @@ package keyboard;
 import javax.sound.midi.*;
 
 public class KeyboardModel implements MusicPlayer {
-    private static FakeMidiChannel fake;
     private static KeyboardModel keyboard;
+    private static FakeMidiChannel fake;
 
     Synthesizer synthesizer;
     MidiChannel channel;
 
-    public static enum Instrument{
-        Piano(1, "Piano"), BrightAcousticPiano(2, "Bright Acoustic Piano"), ElectricGrandPiano(3, "Electic Grand Piano"), HonkyTonk(4, "Honky Tonk"),
-        ElectricPiano1(5, "Electric Piano 1"), Harpsichord(7, "Harpsichord"), DrawbarOrgan(17, "Drawbar Organ"), PercussiveOrgan(18, "Percussive Organ"),
-        RockOrgan(19, "Rock Organ"), ChurchOrgan(20, "Church Organ"), ReedOrgan(21, "Reed Organ"), Accordion(22, "Acordion"),Harmonica(23, "Harmonica"),
-        TangoAccordion(24, "Tango Accordion"), PizzicatoStrings(46, "Pizzicato Strings"), Helicopter(126,"Helicopter"), Gunshots(128, "Gunshot");
-
-        private final int midiCode;
-        private final String name;
-
-        Instrument(int midiCode, String name){
-            this.midiCode = midiCode;
-            this.name = name;
-        }
-        public String toString(){
-            return this.name;
-        }
-        public int getMidiCode(){
-            return midiCode;
-        }       
-    }
-
-    public static enum Note{
-        C(1), Csharp(2), D(3), Dsharp(4), E(5), F(6), Fsharp(7), G(8), Gsharp(9), A(10), Asharp(11), B(12);
-        private final int note;
-
-        Note(int note){
-            this.note = note;
-        }
-        int getNote() {
-            return note;
-        }
-    }
-
-    // Only used for tests.
+    // Test constructor used for injecting a fake MidiChannel.
     protected KeyboardModel(MidiChannel channel) {
         this.channel = channel;
     }
 
     public KeyboardModel() throws MidiUnavailableException {
-      synthesizer = MidiSystem.getSynthesizer();
-      synthesizer.open();
-      channel = synthesizer.getChannels()[0];
-    }    
-    public void setInstrument(Instrument instrument){
+        synthesizer = MidiSystem.getSynthesizer();
+        synthesizer.open();
+        channel = synthesizer.getChannels()[0];
+    }
+
+    public void setInstrument(Instrument instrument) {
         channel.programChange(instrument.getMidiCode());
     }
 
@@ -62,79 +30,34 @@ public class KeyboardModel implements MusicPlayer {
         keyboard.stopNote(4, note, 64);
     }
 
-    public void startNote(int octave, Note note, int volume){
+    @Override
+    public void startNote(int octave, Note note, int volume) {
         //Octave number corresponds with classic theory, 1 through 8
         int key = 11 + (octave * 12) + note.getNote();
         channel.noteOn(key, volume);
     }
-    public void stopNote(int octave, Note note, int volume){
+
+    @Override
+    public void stopNote(int octave, Note note, int volume) {
         int key = 11 + (octave * 12) + note.getNote();
         channel.noteOff(key, volume);
     }
-    
+
     public void allNotesOff() {
         channel.allNotesOff();
     }
 
-    public static class FakeMidiChannel implements MidiChannel {
-        private int key, vel;
-        private boolean noteOn;
-
-        public void allNotesOff(){}
-        public void allSoundOff(){}
-        public void controlChange(int controller, int value){}
-        public int getChannelPressure(){return 0;}
-        public int getController(int controller){return 0;}
-        public boolean getMono(){return false;}
-        public boolean getMute(){return false;}
-        public boolean getOmni(){return false;}
-        public int getPitchBend(){return 0;}
-        public int getPolyPressure(int noteNumber){return 0;}
-        public int getProgram(){return 0;}
-        public boolean getSolo(){return false;}
-        public boolean localControl(boolean on){return false;}
-        public void programChange(int program){}
-        public void programChange(int bank, int program){}
-        public void resetAllControllers(){}
-        public void setChannelPressure(int pressure){}
-        public void setMono(boolean on){}
-        public void setMute(boolean mute){}
-        public void setOmni(boolean on){}
-        public void setPitchBend(int bend){}
-        public void setPolyPressure(int noteNumber, int pressure){}
-        public void setSolo(boolean soloState){}
-
-        public void noteOn(int key){}
-        public void noteOff(int key){}
-
-        // Initialization Constructors -2 param
-        public void noteOn(int key, int vel) {
-            this.key = key;
-            this.vel = vel;
-            this.noteOn = true;
-        }
-        public void noteOff(int key, int vel) {
-            this.key = key;
-            this.vel = vel;
-            this.noteOn = false;
-        }
-
-        public boolean expect(int key, int vel, boolean noteOn) {
-            return this.key == key && this.vel==vel && this.noteOn == this.noteOn;
-        }
-    }
-
-    // Debug overloaded methods.
-    private static boolean startNoteTest(int oct, Note note, int expectedNote){
+    private static boolean startNoteTest(int oct, Note note, int expectedNote) {
         boolean notetestPassed = true;
         keyboard.startNote(oct, note, 64);
-        if (!fake.expect(expectedNote, 64, true)){
+        if (!fake.expect(expectedNote, 64, true)) {
             System.out.println( note + "" +  oct + " Test failed!" ) ;
             notetestPassed = false;
         }
         return notetestPassed;
     }
-    private static boolean stopNoteTest(int oct, Note note, int expectedNote){
+
+    private static boolean stopNoteTest(int oct, Note note, int expectedNote) {
         boolean noteTestPassed = true;
         keyboard.stopNote(oct, note, 64);
         if (!fake.expect(expectedNote, 64, false)) {
@@ -144,7 +67,7 @@ public class KeyboardModel implements MusicPlayer {
         return noteTestPassed;
     }
 
-    private static boolean testSummary(){
+    private static boolean testSummary() {
         boolean testsPassed = true;
         testsPassed &= startNoteTest(1, Note.C, 24);
         testsPassed &= startNoteTest(1, Note.Csharp, 25);
@@ -191,7 +114,7 @@ public class KeyboardModel implements MusicPlayer {
     public static void main(String[] args) throws Exception {
         fake = new FakeMidiChannel();
         keyboard = new KeyboardModel(fake);
-        if(!testSummary()){
+        if(!testSummary()) {
             return;
         }
         System.out.println("Tests passed! Hooray! Hooray!");
