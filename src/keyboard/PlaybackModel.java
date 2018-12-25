@@ -9,15 +9,15 @@ public class PlaybackModel implements Runnable{
     }
     
     @Override
-    public void run(){
-        if(recording.size()==0){
+    public void run() {
+        if(recording.size()==0) {
             return;
         }
         
-        RecordedPlaybackModel.RecordedNote last = recording.getNotes(0);
+        RecordedNote last = recording.getNotes(0);
         keyboard.startNote(last.octave, last.note, 64);
         for(int a = 1; a < recording.size(); a++){
-            RecordedPlaybackModel.RecordedNote current = recording.getNotes(a);
+            RecordedNote current = recording.getNotes(a);
             long time = current.timestamp - last.timestamp;
             try {
                 Thread.sleep(time);
@@ -36,33 +36,33 @@ public class PlaybackModel implements Runnable{
     public static void main(String[] args) throws Exception{
         //Input
         RecordedPlaybackModel recording = new RecordedPlaybackModel();
-        recording.addNote(KeyboardModel.Note.C, 0, 4, true);
-        recording.addNote(KeyboardModel.Note.C, 10, 4, false);
-        recording.addNote(KeyboardModel.Note.Fsharp, 20, 4, true);
-        recording.addNote(KeyboardModel.Note.D, 20, 4, true);
-        recording.addNote(KeyboardModel.Note.Fsharp, 30, 4, false);
-        recording.addNote(KeyboardModel.Note.D, 55, 4, false);
-        recording.addNote(KeyboardModel.Note.G, 57, 7, true);
-        recording.addNote(KeyboardModel.Note.G, 69, 7, false);
+        recording.addNote(Note.C, 0, 4, true);
+        recording.addNote(Note.C, 10, 4, false);
+        recording.addNote(Note.Fsharp, 20, 4, true);
+        recording.addNote(Note.D, 20, 4, true);
+        recording.addNote(Note.Fsharp, 30, 4, false);
+        recording.addNote(Note.D, 55, 4, false);
+        recording.addNote(Note.G, 57, 7, true);
+        recording.addNote(Note.G, 69, 7, false);
         
         //Expected output
-        KeyboardController.FakeKeyboardModel keyboard = new KeyboardController.FakeKeyboardModel();
-        keyboard.expect(KeyboardModel.Note.C, 4, true);
-        keyboard.expect(KeyboardModel.Note.C, 4, false);
-        keyboard.expect(KeyboardModel.Note.Fsharp,  4, true);
-        keyboard.expect(KeyboardModel.Note.D, 4, true);
-        keyboard.expect(KeyboardModel.Note.Fsharp, 4, false);
-        keyboard.expect(KeyboardModel.Note.D, 4, false);
-        keyboard.expect(KeyboardModel.Note.G, 7, true);
-        keyboard.expect(KeyboardModel.Note.G, 7, false);
+        FakeKeyboardModel keyboard = new FakeKeyboardModel();
+        keyboard.expect(Note.C, 4, true);
+        keyboard.expect(Note.C, 4, false);
+        keyboard.expect(Note.Fsharp,  4, true);
+        keyboard.expect(Note.D, 4, true);
+        keyboard.expect(Note.Fsharp, 4, false);
+        keyboard.expect(Note.D, 4, false);
+        keyboard.expect(Note.G, 7, true);
+        keyboard.expect(Note.G, 7, false);
         
         //Start playback with timeout of 1 second
         PlaybackModel player = new PlaybackModel(keyboard, recording);
         Thread thread = new Thread(player);
         thread.start();
-        try{
+        try {
             thread.join(1000);
-        }catch(InterruptedException e){
+        } catch(InterruptedException unused) {
             System.out.println("Test has failed due to timeout.");
         }
         
@@ -74,9 +74,8 @@ public class PlaybackModel implements Runnable{
         
         //Empty recording: no expectations are set
         recording = new RecordedPlaybackModel();
-        keyboard = new KeyboardController.FakeKeyboardModel();
+        keyboard = new FakeKeyboardModel();
         player = new PlaybackModel(keyboard, recording);
         player.run();
-        
     }
 }
