@@ -25,6 +25,7 @@ public class WelcomeScreen extends javax.swing.JFrame {
         birthdayButton.addActionListener(listen);
         maryButton.addActionListener(listen);
         boatButton.addActionListener(listen);
+        jingleButton.addActionListener(listen);
     }
     
     public boolean isMary(Object source){
@@ -35,6 +36,9 @@ public class WelcomeScreen extends javax.swing.JFrame {
     }
     public boolean isBoat(Object source){
         return source == boatButton;
+    }
+    public boolean isJingle(Object source){
+        return source == jingleButton;
     }
     
     /**
@@ -59,6 +63,8 @@ public class WelcomeScreen extends javax.swing.JFrame {
         maryButton = new javax.swing.JToggleButton();
         jSeparator3 = new javax.swing.JSeparator();
         boatButton = new javax.swing.JToggleButton();
+        jSeparator7 = new javax.swing.JSeparator();
+        jingleButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -99,6 +105,13 @@ public class WelcomeScreen extends javax.swing.JFrame {
 
         boatButton.setText("Row, Row, Row Your Boat");
         jPanel1.add(boatButton);
+
+        jSeparator7.setMinimumSize(new java.awt.Dimension(0, 0));
+        jSeparator7.setPreferredSize(new java.awt.Dimension(5000, 0));
+        jPanel1.add(jSeparator7);
+
+        jingleButton.setText("Jingle Bells");
+        jPanel1.add(jingleButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,6 +180,8 @@ public class WelcomeScreen extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JToggleButton jingleButton;
     private javax.swing.JToggleButton maryButton;
     // End of variables declaration//GEN-END:variables
 }
